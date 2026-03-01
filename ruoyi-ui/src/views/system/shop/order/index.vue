@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container shop-order-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="订单号" prop="orderNo">
         <el-input
@@ -84,73 +84,82 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单ID" align="center" prop="orderId" width="80" />
-      <el-table-column label="订单号" align="center" prop="orderNo" width="180" />
-      <el-table-column label="用户" align="center" prop="username" width="100" />
-      <el-table-column label="商品数量" align="center" prop="productCount" width="80" />
-      <el-table-column label="应付金额" align="center" prop="payAmount" width="100">
-        <template slot-scope="scope">
-          <span>¥{{ scope.row.payAmount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="订单状态" align="center" prop="orderStatusText" width="90">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.orderStatus === 'pending'" type="warning">待付款</el-tag>
-          <el-tag v-else-if="scope.row.orderStatus === 'paid'" type="primary">已付款</el-tag>
-          <el-tag v-else-if="scope.row.orderStatus === 'shipped'" type="success">已发货</el-tag>
-          <el-tag v-else-if="scope.row.orderStatus === 'completed'" type="info">已完成</el-tag>
-          <el-tag v-else-if="scope.row.orderStatus === 'cancelled'" type="danger">已取消</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="收货人" align="center" prop="receiverName" width="100" />
-      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleDetail(scope.row)"
-            v-hasPermi="['shop:order:query']"
-          >详情</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-sold-out"
-            @click="handleShip(scope.row)"
-            v-hasPermi="['shop:order:edit']"
-            v-if="scope.row.orderStatus === 'paid'"
-          >发货</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-finished"
-            @click="handleComplete(scope.row)"
-            v-hasPermi="['shop:order:edit']"
-            v-if="scope.row.orderStatus === 'shipped'"
-          >完成</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['shop:order:remove']"
-            v-if="scope.row.orderStatus === 'cancelled'"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!-- 表格容器 -->
+    <div class="table-container">
+      <el-table
+        v-loading="loading"
+        :data="orderList"
+        @selection-change="handleSelectionChange"
+        height="100%"
+        style="width: 100%"
+      >
+        <el-table-column type="selection" min-width="55" align="center" />
+        <el-table-column label="订单ID" align="center" prop="orderId" min-width="80" />
+        <el-table-column label="订单号" align="center" prop="orderNo" min-width="180" />
+        <el-table-column label="用户" align="center" prop="username" min-width="100" show-overflow-tooltip />
+        <el-table-column label="商品数量" align="center" prop="productCount" min-width="80" />
+        <el-table-column label="应付金额" align="center" prop="payAmount" min-width="100">
+          <template slot-scope="scope">
+            <span>¥{{ scope.row.payAmount }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="订单状态" align="center" prop="orderStatusText" min-width="90">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.orderStatus === 'pending'" type="warning">待付款</el-tag>
+            <el-tag v-else-if="scope.row.orderStatus === 'paid'" type="primary">已付款</el-tag>
+            <el-tag v-else-if="scope.row.orderStatus === 'shipped'" type="success">已发货</el-tag>
+            <el-tag v-else-if="scope.row.orderStatus === 'completed'" type="info">已完成</el-tag>
+            <el-tag v-else-if="scope.row.orderStatus === 'cancelled'" type="danger">已取消</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="收货人" align="center" prop="receiverName" min-width="100" show-overflow-tooltip />
+        <el-table-column label="联系电话" align="center" prop="receiverPhone" min-width="120" show-overflow-tooltip />
+        <el-table-column label="创建时间" align="center" prop="createTime" min-width="160" />
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="200">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-view"
+              @click="handleDetail(scope.row)"
+              v-hasPermi="['shop:order:query']"
+            >详情</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-sold-out"
+              @click="handleShip(scope.row)"
+              v-hasPermi="['shop:order:edit']"
+              v-if="scope.row.orderStatus === 'paid'"
+            >发货</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-finished"
+              @click="handleComplete(scope.row)"
+              v-hasPermi="['shop:order:edit']"
+              v-if="scope.row.orderStatus === 'shipped'"
+            >完成</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+              v-hasPermi="['shop:order:remove']"
+              v-if="scope.row.orderStatus === 'cancelled'"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
 
     <!-- 创建订单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="900px" append-to-body>
@@ -189,23 +198,23 @@
               <el-button type="primary" size="mini" icon="el-icon-plus" @click="openProductSelect">添加商品</el-button>
             </el-form-item>
             <el-table :data="form.orderItems" size="small">
-              <el-table-column label="商品名称" prop="productName" />
-              <el-table-column label="单价" prop="productPrice" width="100">
+              <el-table-column label="商品名称" prop="productName" min-width="200" show-overflow-tooltip />
+              <el-table-column label="单价" prop="productPrice" min-width="100">
                 <template slot-scope="scope">
                   ¥{{ scope.row.productPrice }}
                 </template>
               </el-table-column>
-              <el-table-column label="数量" width="150">
+              <el-table-column label="数量" min-width="150">
                 <template slot-scope="scope">
                   <el-input-number v-model="scope.row.quantity" :min="1" size="mini" controls-position="right" @change="handleQuantityChange(scope.row)" />
                 </template>
               </el-table-column>
-              <el-table-column label="小计" width="100">
+              <el-table-column label="小计" prop="subtotal" min-width="100">
                 <template slot-scope="scope">
                   ¥{{ (scope.row.productPrice * scope.row.quantity).toFixed(2) }}
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="80">
+              <el-table-column label="操作" min-width="80">
                 <template slot-scope="scope">
                   <el-button type="text" size="small" icon="el-icon-delete" @click="removeOrderItem(scope.$index)">删除</el-button>
                 </template>
@@ -292,15 +301,15 @@
     <!-- 选择商品对话框 -->
     <el-dialog title="选择商品" :visible.sync="productSelectOpen" width="800px" append-to-body>
       <el-table :data="productList" @selection-change="handleProductSelectionChange">
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="商品名称" prop="productName" />
-        <el-table-column label="商品编码" prop="productCode" width="120" />
-        <el-table-column label="销售价" prop="price" width="100">
+        <el-table-column type="selection" min-width="55" align="center" />
+        <el-table-column label="商品名称" prop="productName" min-width="200" show-overflow-tooltip />
+        <el-table-column label="商品编码" prop="productCode" min-width="120" show-overflow-tooltip />
+        <el-table-column label="销售价" prop="price" min-width="100">
           <template slot-scope="scope">
             ¥{{ scope.row.price }}
           </template>
         </el-table-column>
-        <el-table-column label="库存" prop="stock" width="80" />
+        <el-table-column label="库存" prop="stock" min-width="80" />
       </el-table>
       <pagination
         v-show="productTotal > 0"
@@ -315,9 +324,9 @@
       </div>
     </el-dialog>
 
-    <!-- 订单详情对话框 -->
-    <el-dialog :title="detailTitle" :visible.sync="detailOpen" width="800px" append-to-body>
-      <el-descriptions :column="2" border>
+    <!-- 订单详情抽屉 -->
+    <el-drawer :title="detailTitle" :visible.sync="detailOpen" direction="rtl" size="50%">
+      <el-descriptions :column="2" border class="drawer-content">
         <el-descriptions-item label="订单号">{{ orderDetail.orderNo }}</el-descriptions-item>
         <el-descriptions-item label="订单状态">
           <el-tag v-if="orderDetail.orderStatus === 'pending'" type="warning">待付款</el-tag>
@@ -351,32 +360,311 @@
       </el-descriptions>
 
       <el-divider content-position="left">商品明细</el-divider>
-      <el-table :data="orderDetail.orderItems" size="small">
-        <el-table-column label="商品" prop="productName" />
-        <el-table-column label="单价" prop="productPrice" width="100">
+      <el-table :data="orderDetail.orderItems" size="small" class="drawer-content">
+        <el-table-column label="商品" prop="productName" min-width="300">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="handleViewProduct(scope.row)">{{ scope.row.productName }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="单价" prop="productPrice" min-width="100">
           <template slot-scope="scope">
             ¥{{ scope.row.productPrice }}
           </template>
         </el-table-column>
-        <el-table-column label="数量" prop="quantity" width="80" align="center" />
-        <el-table-column label="小计" prop="subtotal" width="100">
+        <el-table-column label="数量" prop="quantity" min-width="80" align="center" />
+        <el-table-column label="小计" prop="subtotal" min-width="100">
           <template slot-scope="scope">
             ¥{{ scope.row.subtotal }}
           </template>
         </el-table-column>
       </el-table>
 
-      <div slot="footer" class="dialog-footer">
+      <div class="drawer-footer">
         <el-button @click="detailOpen = false">关 闭</el-button>
       </div>
-    </el-dialog>
+    </el-drawer>
+
+    <!-- 商品详情抽屉 -->
+    <el-drawer title="商品详情" :visible.sync="productDetailOpen" direction="rtl" size="70%">
+      <div class="product-drawer-content" v-if="productDetail.productId">
+        <!-- 商品基本信息 -->
+        <div class="product-section">
+          <h4 class="section-title">基本信息</h4>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="label">商品名称：</span>
+                <span class="value">{{ productDetail.productName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">商品编码：</span>
+                <span class="value">{{ productDetail.productCode }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">商品副标题：</span>
+                <span class="value">{{ productDetail.productSubTitle || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">分类：</span>
+                <span class="value">{{ productDetail.categoryName || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">单位：</span>
+                <span class="value">{{ productDetail.unit || '-' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="main-image-container">
+                <image-preview v-if="productDetail.mainImage" :src="productDetail.mainImage" :width="200" :height="200" />
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!-- 价格信息 -->
+        <div class="product-section">
+          <h4 class="section-title">价格信息</h4>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <div class="price-item">
+                <span class="price-label">销售价</span>
+                <span class="price-value primary">¥{{ productDetail.price }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="price-item">
+                <span class="price-label">原价</span>
+                <span class="price-value">¥{{ productDetail.originalPrice || '-' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="price-item">
+                <span class="price-label">会员价</span>
+                <span class="price-value">¥{{ productDetail.memberPrice || '-' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="price-item">
+                <span class="price-label">成本价</span>
+                <span class="price-value">¥{{ productDetail.costPrice || '-' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!-- 库存信息 -->
+        <div class="product-section">
+          <h4 class="section-title">库存信息</h4>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <div class="info-item">
+                <span class="label">库存：</span>
+                <span class="value">{{ productDetail.stock }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="info-item">
+                <span class="label">销量：</span>
+                <span class="value">{{ productDetail.sales }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="info-item">
+                <span class="label">预警值：</span>
+                <span class="value">{{ productDetail.lowStock || '-' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="info-item">
+                <span class="label">重量：</span>
+                <span class="value">{{ productDetail.weight || '-' }}g</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!-- 商品状态 -->
+        <div class="product-section">
+          <h4 class="section-title">商品状态</h4>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-tag v-if="productDetail.isOnSale === '1'" type="success" size="medium">上架</el-tag>
+              <el-tag v-else type="info" size="medium">下架</el-tag>
+            </el-col>
+            <el-col :span="6">
+              <el-tag v-if="productDetail.isHot === '1'" type="danger" size="medium">热销</el-tag>
+              <el-tag v-else type="info" size="medium">普通</el-tag>
+            </el-col>
+            <el-col :span="6">
+              <el-tag v-if="productDetail.isNew === '1'" type="success" size="medium">新品</el-tag>
+              <el-tag v-else type="info" size="medium">非新品</el-tag>
+            </el-col>
+            <el-col :span="6">
+              <el-tag v-if="productDetail.isRecommend === '1'" type="warning" size="medium">推荐</el-tag>
+              <el-tag v-else type="info" size="medium">不推荐</el-tag>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!-- 商品详情 -->
+        <div class="product-section">
+          <h4 class="section-title">商品详情</h4>
+          <div class="detail-content" v-html="productDetail.detail"></div>
+        </div>
+
+        <!-- 其他信息 -->
+        <div class="product-section">
+          <h4 class="section-title">其他信息</h4>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="label">关键词：</span>
+                <span class="value">{{ productDetail.keywords || '-' }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="label">排序：</span>
+                <span class="value">{{ productDetail.sortOrder }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20" style="margin-top: 10px;">
+            <el-col :span="24">
+              <div class="info-item">
+                <span class="label">备注：</span>
+                <span class="value">{{ productDetail.remark || '-' }}</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20" style="margin-top: 10px;">
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="label">创建时间：</span>
+                <span class="value">{{ productDetail.createTime }}</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="info-item">
+                <span class="label">更新时间：</span>
+                <span class="value">{{ productDetail.updateTime }}</span>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <div class="drawer-footer">
+        <el-button @click="productDetailOpen = false">关 闭</el-button>
+      </div>
+    </el-drawer>
   </div>
 </template>
+
+<style scoped>
+.shop-order-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 84px);
+}
+.table-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.drawer-content {
+  padding: 0 20px;
+}
+.product-drawer-content {
+  padding: 20px;
+  padding-bottom: 60px;
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+}
+.product-section {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f5f7fa;
+  border-radius: 4px;
+}
+.section-title {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #303133;
+  border-left: 3px solid #409EFF;
+  padding-left: 10px;
+}
+.info-item {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.info-item .label {
+  color: #909399;
+  display: inline-block;
+  min-width: 80px;
+}
+.info-item .value {
+  color: #303133;
+  font-weight: 500;
+}
+.price-item {
+  text-align: center;
+  padding: 15px;
+  background: #fff;
+  border-radius: 4px;
+}
+.price-label {
+  display: block;
+  font-size: 14px;
+  color: #909399;
+  margin-bottom: 8px;
+}
+.price-value {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #606266;
+}
+.price-value.primary {
+  color: #F56C6C;
+}
+.main-image-container {
+  text-align: center;
+  padding: 10px;
+  background: #fff;
+  border-radius: 4px;
+}
+.detail-content {
+  padding: 15px;
+  background: #fff;
+  border-radius: 4px;
+  min-height: 100px;
+  overflow-y: auto;
+}
+.detail-content >>> img {
+  max-width: 100%;
+}
+.product-detail-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.drawer-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 20px;
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  text-align: right;
+}
+</style>
 
 <script>
 import { listOrder, getOrder, delOrder, shipOrder, completeOrder, addOrder } from "@/api/shop/order";
 import { listUser } from "@/api/system/user";
-import { listProduct } from "@/api/shop/product/product";
+import { listProduct, getProduct } from "@/api/shop/product/product";
 
 export default {
   name: "ShopOrder",
@@ -410,6 +698,10 @@ export default {
       detailOpen: false,
       // 订单详情
       orderDetail: {},
+      // 商品详情弹窗
+      productDetailOpen: false,
+      // 商品详情
+      productDetail: {},
       // 用户列表
       userList: [],
       // 商品选择弹窗
@@ -495,7 +787,7 @@ export default {
     },
     /** 获取用户列表 */
     getUserList() {
-      listUser().then(response => {
+      listUser({ pageNum: 1, pageSize: 1000 }).then(response => {
         this.userList = response.rows;
       });
     },
@@ -615,6 +907,12 @@ export default {
             this.$modal.msgError("请至少选择一件商品");
             return;
           }
+          // 根据选择的用户ID获取用户名
+          const user = this.userList.find(u => u.userId === this.form.userId);
+          if (user) {
+            this.form.username = user.userName;
+          }
+
           // 计算金额
           this.form.productCount = this.form.orderItems.reduce((sum, item) => sum + item.quantity, 0);
           this.form.productAmount = this.totalAmount;
@@ -645,6 +943,14 @@ export default {
         this.orderDetail = response.data;
         this.detailOpen = true;
         this.detailTitle = "订单详情 - " + this.orderDetail.orderNo;
+      });
+    },
+    /** 查看商品详情 */
+    handleViewProduct(row) {
+      const productId = row.productId;
+      getProduct(productId).then(response => {
+        this.productDetail = response.data;
+        this.productDetailOpen = true;
       });
     },
     /** 订单发货 */
