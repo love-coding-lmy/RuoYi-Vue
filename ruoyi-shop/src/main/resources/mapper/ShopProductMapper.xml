@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopProductMapper">
+
+    <resultMap type="ShopProduct" id="ShopProductResult">
+        <id     property="productId"         column="product_id"        />
+        <result property="productName"       column="product_name"      />
+        <result property="productCode"       column="product_code"      />
+        <result property="productSubTitle"   column="product_sub_title" />
+        <result property="categoryId"        column="category_id"       />
+        <result property="brandId"           column="brand_id"          />
+        <result property="unit"              column="unit"              />
+        <result property="price"             column="price"             />
+        <result property="originalPrice"     column="original_price"    />
+        <result property="memberPrice"       column="member_price"      />
+        <result property="costPrice"         column="cost_price"        />
+        <result property="stock"             column="stock"             />
+        <result property="lowStock"          column="low_stock"         />
+        <result property="sales"             column="sales"             />
+        <result property="weight"            column="weight"            />
+        <result property="mainImage"         column="main_image"        />
+        <result property="images"            column="images"            />
+        <result property="detail"            column="detail"            />
+        <result property="keywords"          column="keywords"          />
+        <result property="isHot"             column="is_hot"            />
+        <result property="isNew"             column="is_new"            />
+        <result property="isRecommend"       column="is_recommend"      />
+        <result property="isOnSale"          column="is_on_sale"        />
+        <result property="sortOrder"         column="sort_order"        />
+        <result property="createBy"          column="create_by"         />
+        <result property="createTime"        column="create_time"       />
+        <result property="updateBy"          column="update_by"         />
+        <result property="updateTime"        column="update_time"       />
+        <result property="remark"            column="remark"            />
+        <result property="categoryName"      column="category_name"     />
+    </resultMap>
+
+    <sql id="selectProductVo">
+        select p.product_id, p.product_name, p.product_code, p.product_sub_title, p.category_id, p.brand_id,
+               p.unit, p.price, p.original_price, p.member_price, p.cost_price, p.stock, p.low_stock, p.sales,
+               p.weight, p.main_image, p.images, p.detail, p.keywords, p.is_hot, p.is_new, p.is_recommend,
+               p.is_on_sale, p.sort_order, p.create_by, p.create_time, p.update_by, p.update_time, p.remark,
+               c.category_name
+        from shop_product p
+        left join shop_category c on p.category_id = c.category_id
+    </sql>
+
+    <select id="selectProductById" parameterType="Long" resultMap="ShopProductResult">
+        <include refid="selectProductVo"/>
+        where p.product_id = #{productId}
+    </select>
+
+    <select id="selectProductList" parameterType="ShopProduct" resultMap="ShopProductResult">
+        <include refid="selectProductVo"/>
+        <where>
+            <if test="productName != null and productName != ''">
+                AND p.product_name like concat('%', #{productName}, '%')
+            </if>
+            <if test="productCode != null and productCode != ''">
+                AND p.product_code = #{productCode}
+            </if>
+            <if test="categoryId != null">
+                AND p.category_id = #{categoryId}
+            </if>
+            <if test="brandId != null">
+                AND p.brand_id = #{brandId}
+            </if>
+            <if test="isHot != null and isHot != ''">
+                AND p.is_hot = #{isHot}
+            </if>
+            <if test="isNew != null and isNew != ''">
+                AND p.is_new = #{isNew}
+            </if>
+            <if test="isRecommend != null and isRecommend != ''">
+                AND p.is_recommend = #{isRecommend}
+            </if>
+            <if test="isOnSale != null and isOnSale != ''">
+                AND p.is_on_sale = #{isOnSale}
+            </if>
+        </where>
+        order by p.sort_order, p.product_id desc
+    </select>
+
+    <insert id="insertProduct" parameterType="ShopProduct" useGeneratedKeys="true" keyProperty="productId">
+        insert into shop_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="productCode != null and productCode != ''">product_code,</if>
+            <if test="productSubTitle != null">product_sub_title,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="brandId != null">brand_id,</if>
+            <if test="unit != null">unit,</if>
+            <if test="price != null">price,</if>
+            <if test="originalPrice != null">original_price,</if>
+            <if test="memberPrice != null">member_price,</if>
+            <if test="costPrice != null">cost_price,</if>
+            <if test="stock != null">stock,</if>
+            <if test="lowStock != null">low_stock,</if>
+            <if test="sales != null">sales,</if>
+            <if test="weight != null">weight,</if>
+            <if test="mainImage != null">main_image,</if>
+            <if test="images != null">images,</if>
+            <if test="detail != null">detail,</if>
+            <if test="keywords != null">keywords,</if>
+            <if test="isHot != null">is_hot,</if>
+            <if test="isNew != null">is_new,</if>
+            <if test="isRecommend != null">is_recommend,</if>
+            <if test="isOnSale != null">is_on_sale,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="productCode != null and productCode != ''">#{productCode},</if>
+            <if test="productSubTitle != null">#{productSubTitle},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="brandId != null">#{brandId},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="price != null">#{price},</if>
+            <if test="originalPrice != null">#{originalPrice},</if>
+            <if test="memberPrice != null">#{memberPrice},</if>
+            <if test="costPrice != null">#{costPrice},</if>
+            <if test="stock != null">#{stock},</if>
+            <if test="lowStock != null">#{lowStock},</if>
+            <if test="sales != null">#{sales},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="mainImage != null">#{mainImage},</if>
+            <if test="images != null">#{images},</if>
+            <if test="detail != null">#{detail},</if>
+            <if test="keywords != null">#{keywords},</if>
+            <if test="isHot != null">#{isHot},</if>
+            <if test="isNew != null">#{isNew},</if>
+            <if test="isRecommend != null">#{isRecommend},</if>
+            <if test="isOnSale != null">#{isOnSale},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateProduct" parameterType="ShopProduct">
+        update shop_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="productCode != null and productCode != ''">product_code = #{productCode},</if>
+            <if test="productSubTitle != null">product_sub_title = #{productSubTitle},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="brandId != null">brand_id = #{brandId},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="originalPrice != null">original_price = #{originalPrice},</if>
+            <if test="memberPrice != null">member_price = #{memberPrice},</if>
+            <if test="costPrice != null">cost_price = #{costPrice},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="lowStock != null">low_stock = #{lowStock},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="mainImage != null">main_image = #{mainImage},</if>
+            <if test="images != null">images = #{images},</if>
+            <if test="detail != null">detail = #{detail},</if>
+            <if test="keywords != null">keywords = #{keywords},</if>
+            <if test="isHot != null">is_hot = #{isHot},</if>
+            <if test="isNew != null">is_new = #{isNew},</if>
+            <if test="isRecommend != null">is_recommend = #{isRecommend},</if>
+            <if test="isOnSale != null">is_on_sale = #{isOnSale},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </trim>
+        where product_id = #{productId}
+    </update>
+
+    <delete id="deleteProductById" parameterType="Long">
+        delete from shop_product where product_id = #{productId}
+    </delete>
+
+    <delete id="deleteProductByIds" parameterType="Long">
+        delete from shop_product where product_id in
+        <foreach item="productId" collection="array" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
+
+    <update id="updateProductOnSale" parameterType="Long">
+        update shop_product set is_on_sale = '1' where product_id = #{productId}
+    </update>
+
+    <update id="updateProductOffSale" parameterType="Long">
+        update shop_product set is_on_sale = '0' where product_id = #{productId}
+    </update>
+
+</mapper>
