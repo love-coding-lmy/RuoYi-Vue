@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopBannerMapper">
+
+    <resultMap type="ShopBanner" id="ShopBannerResult">
+        <result property="bannerId"    column="banner_id"    />
+        <result property="bannerTitle"    column="banner_title"    />
+        <result property="bannerImage"    column="banner_image"    />
+        <result property="linkUrl"    column="link_url"    />
+        <result property="target"    column="target"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="showStatus"    column="show_status"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBannerVo">
+        select banner_id, banner_title, banner_image, link_url, target, sort_order, show_status, start_time, end_time, create_by, create_time, update_by, update_time
+        from shop_banner
+    </sql>
+
+    <select id="selectBannerById" parameterType="Long" resultMap="ShopBannerResult">
+        <include refid="selectBannerVo"/>
+        where banner_id = #{bannerId}
+    </select>
+
+    <select id="selectBannerList" parameterType="ShopBanner" resultMap="ShopBannerResult">
+        <include refid="selectBannerVo"/>
+        <where>
+            <if test="bannerTitle != null and bannerTitle != ''">
+                AND banner_title like concat('%', #{bannerTitle}, '%')
+            </if>
+            <if test="showStatus != null and showStatus != ''">
+                AND show_status = #{showStatus}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND start_time &gt;= #{params.beginTime}
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                AND end_time &lt;= #{params.endTime}
+            </if>
+        </where>
+        order by sort_order asc, create_time desc
+    </select>
+
+    <insert id="insertBanner" parameterType="ShopBanner" useGeneratedKeys="true" keyProperty="bannerId">
+        insert into shop_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bannerTitle != null and bannerTitle != ''">banner_title,</if>
+            <if test="bannerImage != null and bannerImage != ''">banner_image,</if>
+            <if test="linkUrl != null">link_url,</if>
+            <if test="target != null">target,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="showStatus != null">show_status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bannerTitle != null and bannerTitle != ''">#{bannerTitle},</if>
+            <if test="bannerImage != null and bannerImage != ''">#{bannerImage},</if>
+            <if test="linkUrl != null">#{linkUrl},</if>
+            <if test="target != null">#{target},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="showStatus != null">#{showStatus},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateBanner" parameterType="ShopBanner">
+        update shop_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bannerTitle != null and bannerTitle != ''">banner_title = #{bannerTitle},</if>
+            <if test="bannerImage != null and bannerImage != ''">banner_image = #{bannerImage},</if>
+            <if test="linkUrl != null">link_url = #{linkUrl},</if>
+            <if test="target != null">target = #{target},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="showStatus != null">show_status = #{showStatus},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where banner_id = #{bannerId}
+    </update>
+
+    <delete id="deleteBannerById" parameterType="Long">
+        delete from shop_banner where banner_id = #{bannerId}
+    </delete>
+
+    <delete id="deleteBannerByIds" parameterType="Long">
+        delete from shop_banner where banner_id in
+        <foreach item="bannerId" collection="array" open="(" separator="," close=")">
+            #{bannerId}
+        </foreach>
+    </delete>
+
+</mapper>
