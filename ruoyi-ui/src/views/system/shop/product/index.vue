@@ -21,7 +21,7 @@
         <el-cascader
           v-model="categoryIdList"
           :options="categoryOptions"
-          :props="{ value: 'categoryId', label: 'categoryName', emitPath: false }"
+          :props="{ value: 'categoryId', label: 'categoryName', emitPath: false, checkStrictly: true }"
           placeholder="请选择分类"
           clearable
           @change="handleCategoryChange"
@@ -158,7 +158,7 @@
                   <el-cascader
                     v-model="form.categoryId"
                     :options="categoryOptions"
-                    :props="{ value: 'categoryId', label: 'categoryName', emitPath: false }"
+                    :props="{ value: 'categoryId', label: 'categoryName', emitPath: false, checkStrictly: true }"
                     placeholder="请选择分类"
                     clearable
                   />
