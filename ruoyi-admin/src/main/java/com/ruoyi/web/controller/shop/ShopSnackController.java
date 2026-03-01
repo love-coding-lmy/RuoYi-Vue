@@ -20,10 +20,12 @@ import com.ruoyi.shop.domain.ShopSnackSeries;
 import com.ruoyi.shop.domain.ShopSnackTag;
 import com.ruoyi.shop.domain.ShopPromotion;
 import com.ruoyi.shop.domain.ShopRecommendPosition;
+import com.ruoyi.shop.domain.ShopRecommendItem;
 import com.ruoyi.shop.service.IShopSnackSeriesService;
 import com.ruoyi.shop.service.IShopSnackTagService;
 import com.ruoyi.shop.service.IShopPromotionService;
 import com.ruoyi.shop.service.IShopRecommendPositionService;
+import com.ruoyi.shop.service.IShopRecommendItemService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -33,7 +35,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/shop/snack")
+@RequestMapping("/shop")
 public class ShopSnackController extends BaseController
 {
     @Autowired
@@ -48,12 +50,15 @@ public class ShopSnackController extends BaseController
     @Autowired
     private IShopRecommendPositionService positionService;
 
+    @Autowired
+    private IShopRecommendItemService recommendItemService;
+
     // ==================== 零食系列接口 ====================
 
     /**
      * 查询零食系列列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:list')")
+    @PreAuthorize("@ss.hasPermi('shop:series:list')")
     @GetMapping("/series/list")
     public TableDataInfo seriesList(ShopSnackSeries series)
     {
@@ -65,7 +70,7 @@ public class ShopSnackController extends BaseController
     /**
      * 导出零食系列列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:export')")
+    @PreAuthorize("@ss.hasPermi('shop:series:export')")
     @Log(title = "零食系列", businessType = BusinessType.EXPORT)
     @PostMapping("/series/export")
     public void exportSeries(HttpServletResponse response, ShopSnackSeries series)
@@ -78,7 +83,7 @@ public class ShopSnackController extends BaseController
     /**
      * 获取零食系列详细信息
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:query')")
+    @PreAuthorize("@ss.hasPermi('shop:series:query')")
     @GetMapping(value = "/series/{seriesId}")
     public AjaxResult getSeries(@PathVariable("seriesId") Long seriesId)
     {
@@ -88,7 +93,7 @@ public class ShopSnackController extends BaseController
     /**
      * 新增零食系列
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:add')")
+    @PreAuthorize("@ss.hasPermi('shop:series:add')")
     @Log(title = "零食系列", businessType = BusinessType.INSERT)
     @PostMapping("/series")
     public AjaxResult addSeries(@RequestBody ShopSnackSeries series)
@@ -99,7 +104,7 @@ public class ShopSnackController extends BaseController
     /**
      * 修改零食系列
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:edit')")
+    @PreAuthorize("@ss.hasPermi('shop:series:edit')")
     @Log(title = "零食系列", businessType = BusinessType.UPDATE)
     @PutMapping("/series")
     public AjaxResult editSeries(@RequestBody ShopSnackSeries series)
@@ -110,7 +115,7 @@ public class ShopSnackController extends BaseController
     /**
      * 删除零食系列
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:series:remove')")
+    @PreAuthorize("@ss.hasPermi('shop:series:remove')")
     @Log(title = "零食系列", businessType = BusinessType.DELETE)
     @DeleteMapping("/series/{seriesIds}")
     public AjaxResult removeSeries(@PathVariable Long[] seriesIds)
@@ -123,7 +128,7 @@ public class ShopSnackController extends BaseController
     /**
      * 查询零食标签列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:list')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:list')")
     @GetMapping("/tag/list")
     public TableDataInfo tagList(ShopSnackTag tag)
     {
@@ -135,7 +140,7 @@ public class ShopSnackController extends BaseController
     /**
      * 导出零食标签列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:export')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:export')")
     @Log(title = "零食标签", businessType = BusinessType.EXPORT)
     @PostMapping("/tag/export")
     public void exportTag(HttpServletResponse response, ShopSnackTag tag)
@@ -148,7 +153,7 @@ public class ShopSnackController extends BaseController
     /**
      * 获取零食标签详细信息
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:query')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:query')")
     @GetMapping(value = "/tag/{tagId}")
     public AjaxResult getTag(@PathVariable("tagId") Long tagId)
     {
@@ -158,7 +163,7 @@ public class ShopSnackController extends BaseController
     /**
      * 新增零食标签
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:add')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:add')")
     @Log(title = "零食标签", businessType = BusinessType.INSERT)
     @PostMapping("/tag")
     public AjaxResult addTag(@RequestBody ShopSnackTag tag)
@@ -169,7 +174,7 @@ public class ShopSnackController extends BaseController
     /**
      * 修改零食标签
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:edit')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:edit')")
     @Log(title = "零食标签", businessType = BusinessType.UPDATE)
     @PutMapping("/tag")
     public AjaxResult editTag(@RequestBody ShopSnackTag tag)
@@ -180,7 +185,7 @@ public class ShopSnackController extends BaseController
     /**
      * 删除零食标签
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:tag:remove')")
+    @PreAuthorize("@ss.hasPermi('shop:tag:remove')")
     @Log(title = "零食标签", businessType = BusinessType.DELETE)
     @DeleteMapping("/tag/{tagIds}")
     public AjaxResult removeTag(@PathVariable Long[] tagIds)
@@ -193,7 +198,7 @@ public class ShopSnackController extends BaseController
     /**
      * 查询促销活动列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:list')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:list')")
     @GetMapping("/promotion/list")
     public TableDataInfo promotionList(ShopPromotion promotion)
     {
@@ -205,7 +210,7 @@ public class ShopSnackController extends BaseController
     /**
      * 导出促销活动列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:export')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:export')")
     @Log(title = "促销活动", businessType = BusinessType.EXPORT)
     @PostMapping("/promotion/export")
     public void exportPromotion(HttpServletResponse response, ShopPromotion promotion)
@@ -218,7 +223,7 @@ public class ShopSnackController extends BaseController
     /**
      * 获取促销活动详细信息
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:query')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:query')")
     @GetMapping(value = "/promotion/{promotionId}")
     public AjaxResult getPromotion(@PathVariable("promotionId") Long promotionId)
     {
@@ -228,7 +233,7 @@ public class ShopSnackController extends BaseController
     /**
      * 新增促销活动
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:add')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:add')")
     @Log(title = "促销活动", businessType = BusinessType.INSERT)
     @PostMapping("/promotion")
     public AjaxResult addPromotion(@RequestBody ShopPromotion promotion)
@@ -239,7 +244,7 @@ public class ShopSnackController extends BaseController
     /**
      * 修改促销活动
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:edit')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:edit')")
     @Log(title = "促销活动", businessType = BusinessType.UPDATE)
     @PutMapping("/promotion")
     public AjaxResult editPromotion(@RequestBody ShopPromotion promotion)
@@ -250,7 +255,7 @@ public class ShopSnackController extends BaseController
     /**
      * 删除促销活动
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:promotion:remove')")
+    @PreAuthorize("@ss.hasPermi('shop:promotion:remove')")
     @Log(title = "促销活动", businessType = BusinessType.DELETE)
     @DeleteMapping("/promotion/{promotionIds}")
     public AjaxResult removePromotion(@PathVariable Long[] promotionIds)
@@ -263,7 +268,7 @@ public class ShopSnackController extends BaseController
     /**
      * 查询推荐位列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:list')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:list')")
     @GetMapping("/recommend/list")
     public TableDataInfo recommendList(ShopRecommendPosition position)
     {
@@ -275,7 +280,7 @@ public class ShopSnackController extends BaseController
     /**
      * 导出推荐位列表
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:export')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:export')")
     @Log(title = "推荐位", businessType = BusinessType.EXPORT)
     @PostMapping("/recommend/export")
     public void exportRecommend(HttpServletResponse response, ShopRecommendPosition position)
@@ -288,7 +293,7 @@ public class ShopSnackController extends BaseController
     /**
      * 获取推荐位详细信息
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:query')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:query')")
     @GetMapping(value = "/recommend/{positionId}")
     public AjaxResult getRecommend(@PathVariable("positionId") Long positionId)
     {
@@ -298,7 +303,7 @@ public class ShopSnackController extends BaseController
     /**
      * 新增推荐位
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:add')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:add')")
     @Log(title = "推荐位", businessType = BusinessType.INSERT)
     @PostMapping("/recommend")
     public AjaxResult addRecommend(@RequestBody ShopRecommendPosition position)
@@ -309,7 +314,7 @@ public class ShopSnackController extends BaseController
     /**
      * 修改推荐位
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:edit')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:edit')")
     @Log(title = "推荐位", businessType = BusinessType.UPDATE)
     @PutMapping("/recommend")
     public AjaxResult editRecommend(@RequestBody ShopRecommendPosition position)
@@ -320,11 +325,46 @@ public class ShopSnackController extends BaseController
     /**
      * 删除推荐位
      */
-    @PreAuthorize("@ss.hasPermi('shop:snack:recommend:remove')")
+    @PreAuthorize("@ss.hasPermi('shop:recommend:remove')")
     @Log(title = "推荐位", businessType = BusinessType.DELETE)
     @DeleteMapping("/recommend/{positionIds}")
     public AjaxResult removeRecommend(@PathVariable Long[] positionIds)
     {
         return toAjax(positionService.deletePositionByIds(positionIds));
+    }
+
+    // ==================== 推荐商品接口 ====================
+
+    /**
+     * 根据推荐位ID查询推荐商品列表
+     */
+    @PreAuthorize("@ss.hasPermi('shop:recommend:query')")
+    @GetMapping("/recommend/items/{positionId}")
+    public AjaxResult getRecommendItems(@PathVariable("positionId") Long positionId)
+    {
+        List<ShopRecommendItem> list = recommendItemService.selectRecommendItemsByPositionId(positionId);
+        return success(list);
+    }
+
+    /**
+     * 新增推荐商品
+     */
+    @PreAuthorize("@ss.hasPermi('shop:recommend:add')")
+    @Log(title = "推荐商品", businessType = BusinessType.INSERT)
+    @PostMapping("/recommend/item")
+    public AjaxResult addRecommendItem(@RequestBody ShopRecommendItem item)
+    {
+        return toAjax(recommendItemService.insertRecommendItem(item));
+    }
+
+    /**
+     * 删除推荐商品
+     */
+    @PreAuthorize("@ss.hasPermi('shop:recommend:remove')")
+    @Log(title = "推荐商品", businessType = BusinessType.DELETE)
+    @DeleteMapping("/recommend/item/{itemId}")
+    public AjaxResult removeRecommendItem(@PathVariable("itemId") Long itemId)
+    {
+        return toAjax(recommendItemService.deleteRecommendItemById(itemId));
     }
 }

@@ -47,6 +47,16 @@ public class ShopProductController extends BaseController
     }
 
     /**
+     * 获取所有商品（不分页，用于下拉选择）
+     */
+    @GetMapping("/listAll")
+    public AjaxResult listAll(ShopProduct product)
+    {
+        List<ShopProduct> list = productService.selectProductList(product);
+        return success(list);
+    }
+
+    /**
      * 导出商品列表
      */
     @PreAuthorize("@ss.hasPermi('shop:product:export')")

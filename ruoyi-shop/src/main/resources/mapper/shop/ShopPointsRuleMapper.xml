@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pointsType"    column="points_type"    />
         <result property="pointsValue"    column="points_value"    />
         <result property="ruleCondition"    column="rule_condition"    />
-        <result property="maxPointsPerDay"    column="max_points_per_day"    />
+        <result property="dailyLimit"    column="max_points_per_day"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pointsType != null and pointsType != ''">points_type,</if>
             <if test="pointsValue != null">points_value,</if>
             <if test="ruleCondition != null">rule_condition,</if>
-            <if test="maxPointsPerDay != null">max_points_per_day,</if>
+            <if test="dailyLimit != null">max_points_per_day,</if>
             <if test="status != null">status,</if>
             <if test="remark != null">remark,</if>
             <if test="createBy != null">create_by,</if>
@@ -75,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pointsType != null and pointsType != ''">#{pointsType},</if>
             <if test="pointsValue != null">#{pointsValue},</if>
             <if test="ruleCondition != null">#{ruleCondition},</if>
-            <if test="maxPointsPerDay != null">#{maxPointsPerDay},</if>
+            <if test="dailyLimit != null">#{dailyLimit},</if>
             <if test="status != null">#{status},</if>
             <if test="remark != null">#{remark},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -92,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pointsType != null and pointsType != ''">points_type = #{pointsType},</if>
             <if test="pointsValue != null">points_value = #{pointsValue},</if>
             <if test="ruleCondition != null">rule_condition = #{ruleCondition},</if>
-            <if test="maxPointsPerDay != null">max_points_per_day = #{maxPointsPerDay},</if>
+            <if test="dailyLimit != null">max_points_per_day = #{dailyLimit},</if>
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>

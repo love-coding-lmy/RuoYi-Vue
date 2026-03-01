@@ -44,6 +44,15 @@ export function delSeries(seriesId) {
   })
 }
 
+// 导出零食系列
+export function exportSeries(query) {
+  return request({
+    url: '/shop/series/export',
+    method: 'post',
+    params: query
+  })
+}
+
 // ==================== 零食标签管理 ====================
 // 查询零食标签列表
 export function listTag(query) {
@@ -88,6 +97,15 @@ export function delTag(tagId) {
   })
 }
 
+// 导出零食标签
+export function exportTag(query) {
+  return request({
+    url: '/shop/tag/export',
+    method: 'post',
+    params: query
+  })
+}
+
 // ==================== 促销活动管理 ====================
 // 查询促销活动列表
 export function listPromotion(query) {
@@ -129,6 +147,15 @@ export function delPromotion(promotionId) {
   return request({
     url: '/shop/promotion/' + promotionId,
     method: 'delete'
+  })
+}
+
+// 导出促销活动
+export function exportPromotion(query) {
+  return request({
+    url: '/shop/promotion/export',
+    method: 'post',
+    params: query
   })
 }
 
@@ -198,5 +225,14 @@ export function delRecommendItem(itemId) {
   return request({
     url: '/shop/recommend/item/' + itemId,
     method: 'delete'
+  })
+}
+
+// 导出推荐位
+export function exportRecommend(query) {
+  return request({
+    url: '/shop/recommend/export',
+    method: 'post',
+    params: query
   })
 }

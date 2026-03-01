@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopRecommendItemMapper">
+
+    <resultMap type="ShopRecommendItem" id="ShopRecommendItemResult">
+        <result property="itemId"    column="item_id"    />
+        <result property="positionId"    column="position_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="productImage"    column="product_image"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectRecommendItemVo">
+        select item_id, position_id, product_id, product_name, product_image, sort_order, start_time, end_time, status, create_time
+        from shop_recommend_item
+    </sql>
+
+    <select id="selectRecommendItemById" parameterType="Long" resultMap="ShopRecommendItemResult">
+        <include refid="selectRecommendItemVo"/>
+        where item_id = #{itemId}
+    </select>
+
+    <select id="selectRecommendItemList" parameterType="ShopRecommendItem" resultMap="ShopRecommendItemResult">
+        <include refid="selectRecommendItemVo"/>
+        <where>
+            <if test="positionId != null">
+                AND position_id = #{positionId}
+            </if>
+            <if test="productId != null">
+                AND product_id = #{productId}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by sort_order asc, create_time desc
+    </select>
+
+    <select id="selectRecommendItemsByPositionId" parameterType="Long" resultMap="ShopRecommendItemResult">
+        <include refid="selectRecommendItemVo"/>
+        where position_id = #{positionId}
+        order by sort_order asc, create_time desc
+    </select>
+
+    <insert id="insertRecommendItem" parameterType="ShopRecommendItem" useGeneratedKeys="true" keyProperty="itemId">
+        insert into shop_recommend_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="positionId != null">position_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="productImage != null and productImage != ''">product_image,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="positionId != null">#{positionId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="productImage != null and productImage != ''">#{productImage},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateRecommendItem" parameterType="ShopRecommendItem">
+        update shop_recommend_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="positionId != null">position_id = #{positionId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="productImage != null and productImage != ''">product_image = #{productImage},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where item_id = #{itemId}
+    </update>
+
+    <delete id="deleteRecommendItemById" parameterType="Long">
+        delete from shop_recommend_item where item_id = #{itemId}
+    </delete>
+
+    <delete id="deleteRecommendItemByIds" parameterType="Long">
+        delete from shop_recommend_item where item_id in
+        <foreach item="itemId" collection="array" open="(" separator="," close=")">
+            #{itemId}
+        </foreach>
+    </delete>
+
+</mapper>

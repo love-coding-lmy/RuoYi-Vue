@@ -7,10 +7,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ShopSnackTag" id="ShopSnackTagResult">
         <result property="tagId"    column="tag_id"    />
         <result property="tagName"    column="tag_name"    />
+        <result property="tagCode"    column="tag_code"    />
         <result property="tagColor"    column="tag_color"    />
         <result property="tagType"    column="tag_type"    />
+        <result property="iconUrl"    column="icon_url"    />
         <result property="sortOrder"    column="sort_order"    />
-        <result property="showStatus"    column="show_status"    />
+        <result property="status"    column="status"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -18,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTagVo">
-        select tag_id, tag_name, tag_color, tag_type, sort_order, show_status, create_by, create_time, update_by, update_time
+        select tag_id, tag_name, tag_code, tag_color, tag_type, icon_url, sort_order, status, create_by, create_time, update_by, update_time
         from shop_snack_tag
     </sql>
 
@@ -33,11 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tagName != null and tagName != ''">
                 AND tag_name like concat('%', #{tagName}, '%')
             </if>
+            <if test="tagCode != null and tagCode != ''">
+                AND tag_code like concat('%', #{tagCode}, '%')
+            </if>
             <if test="tagType != null and tagType != ''">
                 AND tag_type = #{tagType}
             </if>
-            <if test="showStatus != null and showStatus != ''">
-                AND show_status = #{showStatus}
+            <if test="status != null and status != ''">
+                AND status = #{status}
             </if>
         </where>
         order by sort_order asc, create_time desc
@@ -47,19 +52,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into shop_snack_tag
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="tagName != null and tagName != ''">tag_name,</if>
+            <if test="tagCode != null and tagCode != ''">tag_code,</if>
             <if test="tagColor != null and tagColor != ''">tag_color,</if>
             <if test="tagType != null">tag_type,</if>
+            <if test="iconUrl != null and iconUrl != ''">icon_url,</if>
             <if test="sortOrder != null">sort_order,</if>
-            <if test="showStatus != null">show_status,</if>
+            <if test="status != null">status,</if>
             <if test="createBy != null">create_by,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="tagName != null and tagName != ''">#{tagName},</if>
+            <if test="tagCode != null and tagCode != ''">#{tagCode},</if>
             <if test="tagColor != null and tagColor != ''">#{tagColor},</if>
             <if test="tagType != null">#{tagType},</if>
+            <if test="iconUrl != null and iconUrl != ''">#{iconUrl},</if>
             <if test="sortOrder != null">#{sortOrder},</if>
-            <if test="showStatus != null">#{showStatus},</if>
+            <if test="status != null">#{status},</if>
             <if test="createBy != null">#{createBy},</if>
             sysdate()
         </trim>
@@ -69,10 +78,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update shop_snack_tag
         <trim prefix="SET" suffixOverrides=",">
             <if test="tagName != null and tagName != ''">tag_name = #{tagName},</if>
+            <if test="tagCode != null and tagCode != ''">tag_code = #{tagCode},</if>
             <if test="tagColor != null and tagColor != ''">tag_color = #{tagColor},</if>
             <if test="tagType != null">tag_type = #{tagType},</if>
+            <if test="iconUrl != null and iconUrl != ''">icon_url = #{iconUrl},</if>
             <if test="sortOrder != null">sort_order = #{sortOrder},</if>
-            <if test="showStatus != null">show_status = #{showStatus},</if>
+            <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             update_time = sysdate()
         </trim>

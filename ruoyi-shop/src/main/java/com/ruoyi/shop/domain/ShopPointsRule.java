@@ -41,9 +41,21 @@ public class ShopPointsRule extends BaseEntity
     /** 规则条件 */
     private String ruleCondition;
 
-    /** 每日最大积分获取限制 */
-    @Excel(name = "每日最大积分")
-    private Integer maxPointsPerDay;
+    /** 每日限额 */
+    @Excel(name = "每日限额")
+    private Integer dailyLimit;
+
+    /** 计算类型（add增加 subtract减少） */
+    @Excel(name = "计算类型")
+    private String calcType;
+
+    /** 比例值（当积分类型为比例时使用） */
+    @Excel(name = "比例值")
+    private Integer ratioValue;
+
+    /** 描述 */
+    @Excel(name = "描述")
+    private String description;
 
     /** 状态 */
     @Excel(name = "状态", readConverterExp = "0=正常, 1=停用")
@@ -128,14 +140,44 @@ public class ShopPointsRule extends BaseEntity
         return ruleCondition;
     }
 
-    public void setMaxPointsPerDay(Integer maxPointsPerDay)
+    public void setDailyLimit(Integer dailyLimit)
     {
-        this.maxPointsPerDay = maxPointsPerDay;
+        this.dailyLimit = dailyLimit;
     }
 
-    public Integer getMaxPointsPerDay()
+    public Integer getDailyLimit()
     {
-        return maxPointsPerDay;
+        return dailyLimit;
+    }
+
+    public void setCalcType(String calcType)
+    {
+        this.calcType = calcType;
+    }
+
+    public String getCalcType()
+    {
+        return calcType;
+    }
+
+    public void setRatioValue(Integer ratioValue)
+    {
+        this.ratioValue = ratioValue;
+    }
+
+    public Integer getRatioValue()
+    {
+        return ratioValue;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public String getDescription()
+    {
+        return description;
     }
 
     public void setStatus(String status)
@@ -188,7 +230,7 @@ public class ShopPointsRule extends BaseEntity
             .append("pointsType", getPointsType())
             .append("pointsValue", getPointsValue())
             .append("ruleCondition", getRuleCondition())
-            .append("maxPointsPerDay", getMaxPointsPerDay())
+            .append("dailyLimit", getDailyLimit())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createTime", getCreateTime())

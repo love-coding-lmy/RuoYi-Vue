@@ -23,8 +23,13 @@ public class ShopSnackSeries extends BaseEntity
     @Excel(name = "系列名称")
     private String seriesName;
 
-    /** 系列图标 */
-    private String seriesIcon;
+    /** 系列编码 */
+    @Excel(name = "系列编码")
+    private String seriesCode;
+
+    /** 系列封面图 */
+    @Excel(name = "系列封面")
+    private String seriesImage;
 
     /** 系列描述 */
     @Excel(name = "系列描述")
@@ -34,9 +39,9 @@ public class ShopSnackSeries extends BaseEntity
     @Excel(name = "排序号")
     private Integer sortOrder;
 
-    /** 显示状态（0显示 1隐藏） */
-    @Excel(name = "显示状态", readConverterExp = "0=显示,1=隐藏")
-    private String showStatus;
+    /** 状态（0正常 1停用） */
+    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
+    private String status;
 
     public void setSeriesId(Long seriesId)
     {
@@ -58,14 +63,24 @@ public class ShopSnackSeries extends BaseEntity
         return seriesName;
     }
 
-    public void setSeriesIcon(String seriesIcon)
+    public void setSeriesCode(String seriesCode)
     {
-        this.seriesIcon = seriesIcon;
+        this.seriesCode = seriesCode;
     }
 
-    public String getSeriesIcon()
+    public String getSeriesCode()
     {
-        return seriesIcon;
+        return seriesCode;
+    }
+
+    public void setSeriesImage(String seriesImage)
+    {
+        this.seriesImage = seriesImage;
+    }
+
+    public String getSeriesImage()
+    {
+        return seriesImage;
     }
 
     public void setSeriesDesc(String seriesDesc)
@@ -88,14 +103,14 @@ public class ShopSnackSeries extends BaseEntity
         return sortOrder;
     }
 
-    public void setShowStatus(String showStatus)
+    public void setStatus(String status)
     {
-        this.showStatus = showStatus;
+        this.status = status;
     }
 
-    public String getShowStatus()
+    public String getStatus()
     {
-        return showStatus;
+        return status;
     }
 
     @Override
@@ -103,10 +118,11 @@ public class ShopSnackSeries extends BaseEntity
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("seriesId", getSeriesId())
             .append("seriesName", getSeriesName())
-            .append("seriesIcon", getSeriesIcon())
+            .append("seriesCode", getSeriesCode())
+            .append("seriesImage", getSeriesImage())
             .append("seriesDesc", getSeriesDesc())
             .append("sortOrder", getSortOrder())
-            .append("showStatus", getShowStatus())
+            .append("status", getStatus())
             .append("createTime", getCreateTime())
             .append("updateTime", getUpdateTime())
             .toString();

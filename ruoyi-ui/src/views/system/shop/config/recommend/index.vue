@@ -60,6 +60,16 @@
           v-hasPermi="['shop:recommend:remove']"
         >删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['shop:recommend:export']"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -220,7 +230,13 @@
         <el-table-column label="商品名称" align="center" prop="productName" :show-overflow-tooltip="true" />
         <el-table-column label="商品图片" align="center" prop="productImage" width="120">
           <template slot-scope="scope">
-            <image-preview v-if="scope.row.productImage" :src="scope.row.productImage" :width="80" :height="60" />
+            <image-preview
+              v-if="scope.row.productImage"
+              :src="scope.row.productImage"
+              :width="80"
+              :height="60"
+            />
+            <span v-else style="color: #ccc;">暂无图片</span>
           </template>
         </el-table-column>
         <el-table-column label="排序" align="center" prop="sortOrder" width="100" />
@@ -250,13 +266,51 @@
     </el-dialog>
 
     <!-- 添加商品对话框 -->
-    <el-dialog title="添加推荐商品" :visible.sync="addItemOpen" width="600px" append-to-body>
-      <el-form ref="itemForm" :model="itemForm" :rules="itemRules" label-width="120px">
+    <el-dialog title="添加推荐商品" :visible.sync="addItemOpen" width="800px" append-to-body>
+      <el-form ref="itemForm" :model="itemForm" :rules="itemRules" label-width="100px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="商品ID" prop="productId">
-              <el-input v-model="itemForm.productId" placeholder="请输入商品ID" />
-              <span style="color: #909399; font-size: 12px;">请输入商品管理中真实的商品ID</span>
+            <el-form-item label="选择商品" prop="productId">
+              <el-select
+                v-model="itemForm.productId"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入商品名称搜索"
+                :remote-method="searchProducts"
+                :loading="productLoading"
+                @change="handleProductChange"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in productOptions"
+                  :key="item.productId"
+                  :label="item.productName + ' (' + item.productCode + ')'"
+                  :value="item.productId"
+                >
+                  <span style="float: left">{{ item.productName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 12px">{{ item.productCode }}</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <!-- 商品预览 -->
+          <el-col :span="24" v-if="selectedProduct.productId">
+            <el-form-item label="商品预览">
+              <div style="display: flex; align-items: center; padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                <image-preview
+                  v-if="selectedProduct.mainImage"
+                  :src="selectedProduct.mainImage"
+                  :width="60"
+                  :height="60"
+                  style="margin-right: 15px;"
+                />
+                <div style="flex: 1;">
+                  <div style="font-weight: bold; margin-bottom: 5px;">{{ selectedProduct.productName }}</div>
+                  <div style="color: #909399; font-size: 12px;">编码: {{ selectedProduct.productCode }}</div>
+                  <div style="color: #f56c6c; font-size: 14px; margin-top: 5px;">¥{{ selectedProduct.price }}</div>
+                </div>
+              </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -305,7 +359,8 @@
 </template>
 
 <script>
-import { listRecommend, getRecommend, delRecommend, addRecommend, updateRecommend, listRecommendItems, addRecommendItem, delRecommendItem } from "@/api/shop/snack";
+import { listRecommend, getRecommend, delRecommend, addRecommend, updateRecommend, listRecommendItems, addRecommendItem, delRecommendItem, exportRecommend } from "@/api/shop/snack";
+import { listProductAll, getProduct } from "@/api/shop/product";
 
 export default {
   name: "SnackRecommend",
@@ -341,6 +396,18 @@ export default {
       currentPositionId: null,
       // 是否显示添加商品对话框
       addItemOpen: false,
+      // 商品选项列表
+      productOptions: [],
+      // 商品搜索加载状态
+      productLoading: false,
+      // 当前选中的商品
+      selectedProduct: {
+        productId: null,
+        productName: null,
+        productCode: null,
+        mainImage: null,
+        price: null
+      },
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -375,7 +442,7 @@ export default {
       // 商品表单校验
       itemRules: {
         productId: [
-          { required: true, message: "商品ID不能为空", trigger: "blur" }
+          { required: true, message: "请选择商品", trigger: "change" }
         ],
         sortOrder: [
           { required: true, message: "排序不能为空", trigger: "blur" }
@@ -425,10 +492,20 @@ export default {
       this.itemForm = {
         positionId: null,
         productId: null,
+        productName: null,
+        productImage: null,
         sortOrder: 0,
         startTime: null,
         endTime: null,
         status: "0"
+      };
+      this.productOptions = [];
+      this.selectedProduct = {
+        productId: null,
+        productName: null,
+        productCode: null,
+        mainImage: null,
+        price: null
       };
       this.resetForm("itemForm");
     },
@@ -494,6 +571,12 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('shop/recommend/export', {
+        ...this.queryParams
+      }, `recommend_${new Date().getTime()}.xlsx`)
+    },
     /** 商品管理 */
     handleManageItems(row) {
       this.currentPositionId = row.positionId;
@@ -535,6 +618,43 @@ export default {
         this.getItemList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 搜索商品 */
+    searchProducts(query) {
+      if (query !== '') {
+        this.productLoading = true;
+        listProductAll({ productName: query, isOnSale: '1' }).then(response => {
+          this.productOptions = response.data;
+          this.productLoading = false;
+        });
+      } else {
+        this.productOptions = [];
+      }
+    },
+    /** 商品选择变更 */
+    handleProductChange(productId) {
+      if (productId) {
+        // 获取商品详情
+        getProduct(productId).then(response => {
+          const product = response.data;
+          this.selectedProduct = {
+            ...product,
+            mainImage: product.mainImage || ''
+          };
+          // 自动填充商品信息
+          this.itemForm.productId = product.productId;
+          this.itemForm.productName = product.productName;
+          this.itemForm.productImage = product.mainImage;
+        });
+      } else {
+        this.selectedProduct = {
+          productId: null,
+          productName: null,
+          productCode: null,
+          mainImage: null,
+          price: null
+        };
+      }
     }
   }
 };

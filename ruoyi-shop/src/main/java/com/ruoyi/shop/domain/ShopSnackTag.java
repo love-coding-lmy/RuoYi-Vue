@@ -23,21 +23,28 @@ public class ShopSnackTag extends BaseEntity
     @Excel(name = "标签名称")
     private String tagName;
 
+    /** 标签编码 */
+    @Excel(name = "标签编码")
+    private String tagCode;
+
     /** 标签颜色 */
     @Excel(name = "标签颜色")
     private String tagColor;
 
-    /** 标签类型（1新品 2热销 3推荐 4限时） */
-    @Excel(name = "标签类型", readConverterExp = "1=新品,2=热销,3=推荐,4=限时")
+    /** 标签类型（feature特性 promo促销 status状态 quality品质） */
+    @Excel(name = "标签类型")
     private String tagType;
+
+    /** 图标URL */
+    private String iconUrl;
 
     /** 排序号 */
     @Excel(name = "排序号")
     private Integer sortOrder;
 
-    /** 显示状态（0显示 1隐藏） */
-    @Excel(name = "显示状态", readConverterExp = "0=显示,1=隐藏")
-    private String showStatus;
+    /** 状态（0正常 1停用） */
+    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
+    private String status;
 
     public void setTagId(Long tagId)
     {
@@ -57,6 +64,16 @@ public class ShopSnackTag extends BaseEntity
     public String getTagName()
     {
         return tagName;
+    }
+
+    public void setTagCode(String tagCode)
+    {
+        this.tagCode = tagCode;
+    }
+
+    public String getTagCode()
+    {
+        return tagCode;
     }
 
     public void setTagColor(String tagColor)
@@ -79,6 +96,16 @@ public class ShopSnackTag extends BaseEntity
         return tagType;
     }
 
+    public void setIconUrl(String iconUrl)
+    {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getIconUrl()
+    {
+        return iconUrl;
+    }
+
     public void setSortOrder(Integer sortOrder)
     {
         this.sortOrder = sortOrder;
@@ -89,14 +116,14 @@ public class ShopSnackTag extends BaseEntity
         return sortOrder;
     }
 
-    public void setShowStatus(String showStatus)
+    public void setStatus(String status)
     {
-        this.showStatus = showStatus;
+        this.status = status;
     }
 
-    public String getShowStatus()
+    public String getStatus()
     {
-        return showStatus;
+        return status;
     }
 
     @Override
@@ -104,10 +131,12 @@ public class ShopSnackTag extends BaseEntity
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("tagId", getTagId())
             .append("tagName", getTagName())
+            .append("tagCode", getTagCode())
             .append("tagColor", getTagColor())
             .append("tagType", getTagType())
+            .append("iconUrl", getIconUrl())
             .append("sortOrder", getSortOrder())
-            .append("showStatus", getShowStatus())
+            .append("status", getStatus())
             .append("createTime", getCreateTime())
             .append("updateTime", getUpdateTime())
             .toString();

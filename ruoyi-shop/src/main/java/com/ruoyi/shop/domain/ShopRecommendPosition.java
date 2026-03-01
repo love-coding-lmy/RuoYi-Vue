@@ -27,21 +27,26 @@ public class ShopRecommendPosition extends BaseEntity
     @Excel(name = "推荐位编码")
     private String positionCode;
 
-    /** 推荐位类型（1首页推荐 2分类推荐 3详情推荐） */
-    @Excel(name = "推荐位类型", readConverterExp = "1=首页推荐,2=分类推荐,3=详情推荐")
+    /** 推荐位类型（index首页 category分类页 detail详情页） */
+    @Excel(name = "推荐位类型")
     private String positionType;
 
-    /** 推荐商品数量 */
-    @Excel(name = "推荐数量")
-    private Integer productCount;
+    /** 最大商品数量 */
+    @Excel(name = "最大商品数量")
+    private Integer maxItems;
 
-    /** 推荐位描述 */
-    @Excel(name = "推荐位描述")
-    private String positionDesc;
+    /** 宽度 */
+    private Integer width;
 
-    /** 显示状态（0显示 1隐藏） */
-    @Excel(name = "显示状态", readConverterExp = "0=显示,1=隐藏")
-    private String showStatus;
+    /** 高度 */
+    private Integer height;
+
+    /** 模板类型 */
+    private String templateType;
+
+    /** 状态（0正常 1停用） */
+    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
+    private String status;
 
     public void setPositionId(Long positionId)
     {
@@ -83,34 +88,54 @@ public class ShopRecommendPosition extends BaseEntity
         return positionType;
     }
 
-    public void setProductCount(Integer productCount)
+    public void setMaxItems(Integer maxItems)
     {
-        this.productCount = productCount;
+        this.maxItems = maxItems;
     }
 
-    public Integer getProductCount()
+    public Integer getMaxItems()
     {
-        return productCount;
+        return maxItems;
     }
 
-    public void setPositionDesc(String positionDesc)
+    public void setWidth(Integer width)
     {
-        this.positionDesc = positionDesc;
+        this.width = width;
     }
 
-    public String getPositionDesc()
+    public Integer getWidth()
     {
-        return positionDesc;
+        return width;
     }
 
-    public void setShowStatus(String showStatus)
+    public void setHeight(Integer height)
     {
-        this.showStatus = showStatus;
+        this.height = height;
     }
 
-    public String getShowStatus()
+    public Integer getHeight()
     {
-        return showStatus;
+        return height;
+    }
+
+    public void setTemplateType(String templateType)
+    {
+        this.templateType = templateType;
+    }
+
+    public String getTemplateType()
+    {
+        return templateType;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
+    }
+
+    public String getStatus()
+    {
+        return status;
     }
 
     @Override
@@ -120,9 +145,11 @@ public class ShopRecommendPosition extends BaseEntity
             .append("positionName", getPositionName())
             .append("positionCode", getPositionCode())
             .append("positionType", getPositionType())
-            .append("productCount", getProductCount())
-            .append("positionDesc", getPositionDesc())
-            .append("showStatus", getShowStatus())
+            .append("maxItems", getMaxItems())
+            .append("width", getWidth())
+            .append("height", getHeight())
+            .append("templateType", getTemplateType())
+            .append("status", getStatus())
             .append("createTime", getCreateTime())
             .append("updateTime", getUpdateTime())
             .toString();

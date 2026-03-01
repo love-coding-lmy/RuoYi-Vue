@@ -7,10 +7,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ShopSnackSeries" id="ShopSnackSeriesResult">
         <result property="seriesId"    column="series_id"    />
         <result property="seriesName"    column="series_name"    />
-        <result property="seriesIcon"    column="series_icon"    />
+        <result property="seriesCode"    column="series_code"    />
+        <result property="seriesImage"    column="series_image"    />
         <result property="seriesDesc"    column="series_desc"    />
         <result property="sortOrder"    column="sort_order"    />
-        <result property="showStatus"    column="show_status"    />
+        <result property="status"    column="status"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -18,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSeriesVo">
-        select series_id, series_name, series_icon, series_desc, sort_order, show_status, create_by, create_time, update_by, update_time
+        select series_id, series_name, series_code, series_image, series_desc, sort_order, status, create_by, create_time, update_by, update_time
         from shop_snack_series
     </sql>
 
@@ -33,8 +34,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seriesName != null and seriesName != ''">
                 AND series_name like concat('%', #{seriesName}, '%')
             </if>
-            <if test="showStatus != null and showStatus != ''">
-                AND show_status = #{showStatus}
+            <if test="seriesCode != null and seriesCode != ''">
+                AND series_code like concat('%', #{seriesCode}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
             </if>
         </where>
         order by sort_order asc, create_time desc
@@ -44,19 +48,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into shop_snack_series
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="seriesName != null and seriesName != ''">series_name,</if>
-            <if test="seriesIcon != null and seriesIcon != ''">series_icon,</if>
+            <if test="seriesCode != null and seriesCode != ''">series_code,</if>
+            <if test="seriesImage != null and seriesImage != ''">series_image,</if>
             <if test="seriesDesc != null">series_desc,</if>
             <if test="sortOrder != null">sort_order,</if>
-            <if test="showStatus != null">show_status,</if>
+            <if test="status != null">status,</if>
             <if test="createBy != null">create_by,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="seriesName != null and seriesName != ''">#{seriesName},</if>
-            <if test="seriesIcon != null and seriesIcon != ''">#{seriesIcon},</if>
+            <if test="seriesCode != null and seriesCode != ''">#{seriesCode},</if>
+            <if test="seriesImage != null and seriesImage != ''">#{seriesImage},</if>
             <if test="seriesDesc != null">#{seriesDesc},</if>
             <if test="sortOrder != null">#{sortOrder},</if>
-            <if test="showStatus != null">#{showStatus},</if>
+            <if test="status != null">#{status},</if>
             <if test="createBy != null">#{createBy},</if>
             sysdate()
         </trim>
@@ -66,10 +72,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update shop_snack_series
         <trim prefix="SET" suffixOverrides=",">
             <if test="seriesName != null and seriesName != ''">series_name = #{seriesName},</if>
-            <if test="seriesIcon != null and seriesIcon != ''">series_icon = #{seriesIcon},</if>
+            <if test="seriesCode != null and seriesCode != ''">series_code = #{seriesCode},</if>
+            <if test="seriesImage != null and seriesImage != ''">series_image = #{seriesImage},</if>
             <if test="seriesDesc != null">series_desc = #{seriesDesc},</if>
             <if test="sortOrder != null">sort_order = #{sortOrder},</if>
-            <if test="showStatus != null">show_status = #{showStatus},</if>
+            <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             update_time = sysdate()
         </trim>

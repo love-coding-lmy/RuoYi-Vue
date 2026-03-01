@@ -53,6 +53,16 @@
           v-hasPermi="['shop:series:remove']"
         >删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['shop:series:export']"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -157,7 +167,7 @@
 </template>
 
 <script>
-import { listSeries, getSeries, delSeries, addSeries, updateSeries } from "@/api/shop/snack";
+import { listSeries, getSeries, delSeries, addSeries, updateSeries, exportSeries } from "@/api/shop/snack";
 
 export default {
   name: "SnackSeries",
@@ -301,6 +311,12 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('shop/series/export', {
+        ...this.queryParams
+      }, `series_${new Date().getTime()}.xlsx`)
     }
   }
 };

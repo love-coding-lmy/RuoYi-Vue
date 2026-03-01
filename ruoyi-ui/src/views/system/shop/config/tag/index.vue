@@ -61,6 +61,16 @@
           v-hasPermi="['shop:tag:remove']"
         >删除</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          v-hasPermi="['shop:tag:export']"
+        >导出</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -191,7 +201,7 @@
 </template>
 
 <script>
-import { listTag, getTag, delTag, addTag, updateTag } from "@/api/shop/snack";
+import { listTag, getTag, delTag, addTag, updateTag, exportTag } from "@/api/shop/snack";
 
 export default {
   name: "SnackTag",
@@ -340,6 +350,12 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('shop/tag/export', {
+        ...this.queryParams
+      }, `tag_${new Date().getTime()}.xlsx`)
     }
   }
 };

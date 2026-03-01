@@ -24,17 +24,13 @@ public class ShopPromotion extends BaseEntity
     @Excel(name = "促销名称")
     private String promotionName;
 
-    /** 促销类型（1折扣 2满减 3买赠） */
-    @Excel(name = "促销类型", readConverterExp = "1=折扣,2=满减,3=买赠")
+    /** 活动类型（seckill秒杀 discount满减 bundle捆绑 gift赠品） */
+    @Excel(name = "活动类型")
     private String promotionType;
 
-    /** 促销额度/折扣值 */
-    @Excel(name = "促销额度")
-    private BigDecimal discountValue;
-
-    /** 满足条件金额 */
-    @Excel(name = "满足金额")
-    private BigDecimal conditionAmount;
+    /** 促销描述 */
+    @Excel(name = "促销描述")
+    private String promotionDesc;
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -46,12 +42,36 @@ public class ShopPromotion extends BaseEntity
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
-    /** 促销描述 */
-    @Excel(name = "促销描述")
-    private String promotionDesc;
+    /** 最低参与金额 */
+    @Excel(name = "最低金额")
+    private BigDecimal minAmount;
 
-    /** 促销状态（0未开始 1进行中 2已结束） */
-    @Excel(name = "促销状态", readConverterExp = "0=未开始,1=进行中,2=已结束")
+    /** 优惠类型（amount金额 percent百分比） */
+    @Excel(name = "优惠类型")
+    private String discountType;
+
+    /** 优惠值 */
+    @Excel(name = "优惠值")
+    private BigDecimal discountValue;
+
+    /** 库存数量 */
+    @Excel(name = "库存数量")
+    private Integer stock;
+
+    /** 已售数量 */
+    @Excel(name = "已售数量")
+    private Integer soldCount;
+
+    /** 每人限购数量（0不限购） */
+    @Excel(name = "每人限购")
+    private Integer limitPerUser;
+
+    /** 优先级（数字越小优先级越高） */
+    @Excel(name = "优先级")
+    private Integer priority;
+
+    /** 状态（0正常 1停用 2已结束） */
+    @Excel(name = "状态", readConverterExp = "0=正常,1=停用,2=已结束")
     private String status;
 
     public void setPromotionId(Long promotionId)
@@ -84,24 +104,14 @@ public class ShopPromotion extends BaseEntity
         return promotionType;
     }
 
-    public void setDiscountValue(BigDecimal discountValue)
+    public void setPromotionDesc(String promotionDesc)
     {
-        this.discountValue = discountValue;
+        this.promotionDesc = promotionDesc;
     }
 
-    public BigDecimal getDiscountValue()
+    public String getPromotionDesc()
     {
-        return discountValue;
-    }
-
-    public void setConditionAmount(BigDecimal conditionAmount)
-    {
-        this.conditionAmount = conditionAmount;
-    }
-
-    public BigDecimal getConditionAmount()
-    {
-        return conditionAmount;
+        return promotionDesc;
     }
 
     public void setStartTime(Date startTime)
@@ -124,14 +134,74 @@ public class ShopPromotion extends BaseEntity
         return endTime;
     }
 
-    public void setPromotionDesc(String promotionDesc)
+    public void setMinAmount(BigDecimal minAmount)
     {
-        this.promotionDesc = promotionDesc;
+        this.minAmount = minAmount;
     }
 
-    public String getPromotionDesc()
+    public BigDecimal getMinAmount()
     {
-        return promotionDesc;
+        return minAmount;
+    }
+
+    public void setDiscountType(String discountType)
+    {
+        this.discountType = discountType;
+    }
+
+    public String getDiscountType()
+    {
+        return discountType;
+    }
+
+    public void setDiscountValue(BigDecimal discountValue)
+    {
+        this.discountValue = discountValue;
+    }
+
+    public BigDecimal getDiscountValue()
+    {
+        return discountValue;
+    }
+
+    public void setStock(Integer stock)
+    {
+        this.stock = stock;
+    }
+
+    public Integer getStock()
+    {
+        return stock;
+    }
+
+    public void setSoldCount(Integer soldCount)
+    {
+        this.soldCount = soldCount;
+    }
+
+    public Integer getSoldCount()
+    {
+        return soldCount;
+    }
+
+    public void setLimitPerUser(Integer limitPerUser)
+    {
+        this.limitPerUser = limitPerUser;
+    }
+
+    public Integer getLimitPerUser()
+    {
+        return limitPerUser;
+    }
+
+    public void setPriority(Integer priority)
+    {
+        this.priority = priority;
+    }
+
+    public Integer getPriority()
+    {
+        return priority;
     }
 
     public void setStatus(String status)
@@ -150,12 +220,18 @@ public class ShopPromotion extends BaseEntity
             .append("promotionId", getPromotionId())
             .append("promotionName", getPromotionName())
             .append("promotionType", getPromotionType())
-            .append("discountValue", getDiscountValue())
-            .append("conditionAmount", getConditionAmount())
+            .append("promotionDesc", getPromotionDesc())
             .append("startTime", getStartTime())
             .append("endTime", getEndTime())
-            .append("promotionDesc", getPromotionDesc())
+            .append("minAmount", getMinAmount())
+            .append("discountType", getDiscountType())
+            .append("discountValue", getDiscountValue())
+            .append("stock", getStock())
+            .append("soldCount", getSoldCount())
+            .append("limitPerUser", getLimitPerUser())
+            .append("priority", getPriority())
             .append("status", getStatus())
+            .append("remark", getRemark())
             .append("createTime", getCreateTime())
             .append("updateTime", getUpdateTime())
             .toString();

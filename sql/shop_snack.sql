@@ -204,41 +204,41 @@ VALUES
 ('新手礼包', 'gift', '新用户专享零食礼包，超值体验！', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 0.00, 'amount', 0.00, 500, 1, 4, '0');
 
 -- ==================== 菜单配置SQL ====================
--- 注意：需要根据实际的商城管理菜单ID调整 parent_id
--- 查询商城管理菜单ID：SELECT menu_id, menu_name FROM sys_menu WHERE menu_name LIKE '%商城%' OR menu_id = 2070;
+-- 零食模块菜单 - 放在商城配置(parent_id: 2040)下
+-- 参考现有菜单结构：积分规则(2041/points)、会员等级(2042/level)、系统参数(2043/system)
 
--- 1. 零食系列菜单
+-- 1. 零食系列菜单 (path: series, 对应积分规则的points路径模式)
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES
-('零食系列', 2070, 20, 'snackSeries', 'system/shop/config/series/index', 1, 0, 'C', '0', '0', 'shop:series:list', 'tree-table', 'admin', sysdate(), '', NULL, '零食系列菜单');
+('零食系列', 2040, 14, 'series', 'system/shop/config/series/index', 1, 0, 'C', '0', '0', 'shop:series:list', 'tree-table', 'admin', sysdate(), '', NULL, '零食系列菜单');
 
 -- 零食系列按钮权限
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark)
 VALUES
-('零食系列查询', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'snackSeries' ORDER BY create_time DESC LIMIT 1) AS tmp), 1, '#', '', 1, 0, 'F', '0', '0', 'shop:series:query', '#', 'admin', sysdate(), ''),
-('零食系列新增', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'snackSeries' ORDER BY create_time DESC LIMIT 1) AS tmp), 2, '#', '', 1, 0, 'F', '0', '0', 'shop:series:add', '#', 'admin', sysdate(), ''),
-('零食系列修改', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'snackSeries' ORDER BY create_time DESC LIMIT 1) AS tmp), 3, '#', '', 1, 0, 'F', '0', '0', 'shop:series:edit', '#', 'admin', sysdate(), ''),
-('零食系列删除', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'snackSeries' ORDER BY create_time DESC LIMIT 1) AS tmp), 4, '#', '', 1, 0, 'F', '0', '0', 'shop:series:remove', '#', 'admin', sysdate(), ''),
-('零食系列导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'snackSeries' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:series:export', '#', 'admin', sysdate(), '');
+('零食系列查询', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'series' ORDER BY create_time DESC LIMIT 1) AS tmp), 1, '#', '', 1, 0, 'F', '0', '0', 'shop:series:query', '#', 'admin', sysdate(), ''),
+('零食系列新增', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'series' ORDER BY create_time DESC LIMIT 1) AS tmp), 2, '#', '', 1, 0, 'F', '0', '0', 'shop:series:add', '#', 'admin', sysdate(), ''),
+('零食系列修改', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'series' ORDER BY create_time DESC LIMIT 1) AS tmp), 3, '#', '', 1, 0, 'F', '0', '0', 'shop:series:edit', '#', 'admin', sysdate(), ''),
+('零食系列删除', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'series' ORDER BY create_time DESC LIMIT 1) AS tmp), 4, '#', '', 1, 0, 'F', '0', '0', 'shop:series:remove', '#', 'admin', sysdate(), ''),
+('零食系列导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食系列' AND path = 'series' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:series:export', '#', 'admin', sysdate(), '');
 
--- 2. 零食标签菜单
+-- 2. 零食标签菜单 (path: tag)
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES
-('零食标签', 2070, 21, 'snackTag', 'system/shop/config/tag/index', 1, 0, 'C', '0', '0', 'shop:tag:list', 'tag', 'admin', sysdate(), '', NULL, '零食标签菜单');
+('零食标签', 2040, 15, 'tag', 'system/shop/config/tag/index', 1, 0, 'C', '0', '0', 'shop:tag:list', 'tag', 'admin', sysdate(), '', NULL, '零食标签菜单');
 
 -- 零食标签按钮权限
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark)
 VALUES
-('零食标签查询', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'snackTag' ORDER BY create_time DESC LIMIT 1) AS tmp), 1, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:query', '#', 'admin', sysdate(), ''),
-('零食标签新增', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'snackTag' ORDER BY create_time DESC LIMIT 1) AS tmp), 2, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:add', '#', 'admin', sysdate(), ''),
-('零食标签修改', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'snackTag' ORDER BY create_time DESC LIMIT 1) AS tmp), 3, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:edit', '#', 'admin', sysdate(), ''),
-('零食标签删除', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'snackTag' ORDER BY create_time DESC LIMIT 1) AS tmp), 4, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:remove', '#', 'admin', sysdate(), ''),
-('零食标签导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'snackTag' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:export', '#', 'admin', sysdate(), '');
+('零食标签查询', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'tag' ORDER BY create_time DESC LIMIT 1) AS tmp), 1, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:query', '#', 'admin', sysdate(), ''),
+('零食标签新增', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'tag' ORDER BY create_time DESC LIMIT 1) AS tmp), 2, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:add', '#', 'admin', sysdate(), ''),
+('零食标签修改', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'tag' ORDER BY create_time DESC LIMIT 1) AS tmp), 3, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:edit', '#', 'admin', sysdate(), ''),
+('零食标签删除', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'tag' ORDER BY create_time DESC LIMIT 1) AS tmp), 4, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:remove', '#', 'admin', sysdate(), ''),
+('零食标签导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '零食标签' AND path = 'tag' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:tag:export', '#', 'admin', sysdate(), '');
 
--- 3. 促销活动菜单
+-- 3. 促销活动菜单 (path: promotion)
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES
-('促销活动', 2070, 22, 'promotion', 'system/shop/config/promotion/index', 1, 0, 'C', '0', '0', 'shop:promotion:list', 'money', 'admin', sysdate(), '', NULL, '促销活动菜单');
+('促销活动', 2040, 16, 'promotion', 'system/shop/config/promotion/index', 1, 0, 'C', '0', '0', 'shop:promotion:list', 'money', 'admin', sysdate(), '', NULL, '促销活动菜单');
 
 -- 促销活动按钮权限
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark)
@@ -249,10 +249,10 @@ VALUES
 ('促销活动删除', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '促销活动' AND path = 'promotion' ORDER BY create_time DESC LIMIT 1) AS tmp), 4, '#', '', 1, 0, 'F', '0', '0', 'shop:promotion:remove', '#', 'admin', sysdate(), ''),
 ('促销活动导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '促销活动' AND path = 'promotion' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:promotion:export', '#', 'admin', sysdate(), '');
 
--- 4. 推荐位管理菜单
+-- 4. 推荐位管理菜单 (path: recommend)
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES
-('推荐位管理', 2070, 23, 'recommend', 'system/shop/config/recommend/index', 1, 0, 'C', '0', '0', 'shop:recommend:list', 'star', 'admin', sysdate(), '', NULL, '推荐位管理菜单');
+('推荐位管理', 2040, 17, 'recommend', 'system/shop/config/recommend/index', 1, 0, 'C', '0', '0', 'shop:recommend:list', 'star', 'admin', sysdate(), '', NULL, '推荐位管理菜单');
 
 -- 推荐位管理按钮权限
 INSERT INTO sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark)
@@ -264,8 +264,10 @@ VALUES
 ('推荐位导出', (SELECT menu_id FROM (SELECT menu_id FROM sys_menu WHERE menu_name = '推荐位管理' AND path = 'recommend' ORDER BY create_time DESC LIMIT 1) AS tmp), 5, '#', '', 1, 0, 'F', '0', '0', 'shop:recommend:export', '#', 'admin', sysdate(), '');
 
 -- 注意事项：
--- 1. parent_id 默认设置为2070，请根据实际商城管理的菜单ID进行调整
---    查询命令：SELECT menu_id, menu_name FROM sys_menu WHERE menu_name LIKE '%商城%';
--- 2. 执行SQL后需要在后台 系统管理 -> 菜单管理 中确认菜单是否正确显示
--- 3. 刷新前端页面或重新登录后可见新菜单
--- 4. 需要给角色分配新菜单的权限
+-- 1. parent_id 设置为2040（商城配置），与积分规则、会员等级、系统参数同级
+--    查询命令：SELECT menu_id, menu_name FROM sys_menu WHERE menu_id = 2040;
+-- 2. 菜单路径遵循现有模式：series、tag、promotion、recommend
+-- 3. 前端组件路径：system/shop/config/{模块}/index
+-- 4. 执行SQL后需要在后台 系统管理 -> 菜单管理 中确认菜单是否正确显示
+-- 5. 刷新前端页面或重新登录后可见新菜单
+-- 6. 需要给角色分配新菜单的权限
