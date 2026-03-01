@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopCategoryMapper">
+
+    <resultMap type="ShopCategory" id="ShopCategoryResult">
+        <id     property="categoryId"     column="category_id"    />
+        <result property="categoryName"   column="category_name"  />
+        <result property="categoryCode"   column="category_code"  />
+        <result property="parentId"       column="parent_id"      />
+        <result property="ancestors"      column="ancestors"      />
+        <result property="orderNum"       column="sort_order"     />
+        <result property="icon"           column="icon"           />
+        <result property="status"         column="show_status"    />
+        <result property="createTime"     column="create_time"    />
+        <result property="updateTime"     column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCategoryVo">
+        select category_id, category_name, category_code, parent_id, ancestors, sort_order, icon, show_status, create_time, update_time
+        from shop_category
+    </sql>
+
+    <select id="selectCategoryById" parameterType="Long" resultMap="ShopCategoryResult">
+        <include refid="selectCategoryVo"/>
+        where category_id = #{categoryId}
+    </select>
+
+    <select id="selectCategoryList" parameterType="ShopCategory" resultMap="ShopCategoryResult">
+        <include refid="selectCategoryVo"/>
+        <where>
+            <if test="categoryName != null and categoryName != ''">
+                AND category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryCode != null and categoryCode != ''">
+                AND category_code = #{categoryCode}
+            </if>
+            <if test="status != null and status != ''">
+                AND show_status = #{status}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+        order by parent_id, sort_order
+    </select>
+
+    <insert id="insertCategory" parameterType="ShopCategory">
+        insert into shop_category (
+            <if test="categoryName != null and categoryName != ''">category_name,</if>
+            <if test="categoryCode != null and categoryCode != ''">category_code,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null and ancestors != ''">ancestors,</if>
+            <if test="orderNum != null">sort_order,</if>
+            <if test="icon != null and icon != ''">icon,</if>
+            <if test="status != null and status != ''">show_status,</if>
+            create_time
+        )values(
+            <if test="categoryName != null and categoryName != ''">#{categoryName},</if>
+            <if test="categoryCode != null and categoryCode != ''">#{categoryCode},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="icon != null and icon != ''">#{icon},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateCategory" parameterType="ShopCategory">
+        update shop_category
+        <set>
+            <if test="categoryName != null and categoryName != ''">category_name = #{categoryName},</if>
+            <if test="categoryCode != null and categoryCode != ''">category_code = #{categoryCode},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="orderNum != null">sort_order = #{orderNum},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="status != null and status != ''">show_status = #{status},</if>
+            update_time = sysdate()
+        </set>
+        where category_id = #{categoryId}
+    </update>
+
+    <delete id="deleteCategoryById" parameterType="Long">
+        delete from shop_category where category_id = #{categoryId}
+    </delete>
+
+    <delete id="deleteCategoryByIds" parameterType="Long">
+        delete from shop_category where category_id in
+        <foreach item="categoryId" collection="array" open="(" separator="," close=")">
+            #{categoryId}
+        </foreach>
+    </delete>
+
+    <select id="selectChildrenCountByParentId" parameterType="Long" resultType="int">
+        select count(1) from shop_category where parent_id = #{parentId}
+    </select>
+
+    <select id="selectProductCountByCategoryId" parameterType="Long" resultType="int">
+        select count(1) from shop_product where category_id = #{categoryId}
+    </select>
+
+</mapper>
