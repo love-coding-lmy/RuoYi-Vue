@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopPointsRuleMapper">
+
+    <resultMap type="ShopPointsRule" id="ShopPointsRuleResult">
+        <result property="ruleId"    column="rule_id"    />
+        <result property="ruleName"    column="rule_name"    />
+        <result property="ruleType"    column="rule_type"    />
+        <result property="ruleCode"    column="rule_code"    />
+        <result property="pointsType"    column="points_type"    />
+        <result property="pointsValue"    column="points_value"    />
+        <result property="ruleCondition"    column="rule_condition"    />
+        <result property="maxPointsPerDay"    column="max_points_per_day"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPointsRuleVo">
+        select rule_id, rule_name, rule_type, rule_code, points_type, points_value, rule_condition, max_points_per_day, status, remark, create_by, create_time, update_by, update_time
+        from shop_points_rule
+    </sql>
+
+    <select id="selectPointsRuleById" parameterType="Long" resultMap="ShopPointsRuleResult">
+        <include refid="selectPointsRuleVo"/>
+        where rule_id = #{ruleId}
+    </select>
+
+    <select id="selectPointsRuleList" parameterType="ShopPointsRule" resultMap="ShopPointsRuleResult">
+        <include refid="selectPointsRuleVo"/>
+        <where>
+            <if test="ruleName != null and ruleName != ''">
+                AND rule_name like concat('%', #{ruleName}, '%')
+            </if>
+            <if test="ruleType != null and ruleType != ''">
+                AND rule_type = #{ruleType}
+            </if>
+            <if test="ruleCode != null and ruleCode != ''">
+                AND rule_code = #{ruleCode}
+            </if>
+            <if test="pointsType != null and pointsType != ''">
+                AND points_type = #{pointsType}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertPointsRule" parameterType="ShopPointsRule" useGeneratedKeys="true" keyProperty="ruleId">
+        insert into shop_points_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">rule_name,</if>
+            <if test="ruleType != null and ruleType != ''">rule_type,</if>
+            <if test="ruleCode != null and ruleCode != ''">rule_code,</if>
+            <if test="pointsType != null and pointsType != ''">points_type,</if>
+            <if test="pointsValue != null">points_value,</if>
+            <if test="ruleCondition != null">rule_condition,</if>
+            <if test="maxPointsPerDay != null">max_points_per_day,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">#{ruleName},</if>
+            <if test="ruleType != null and ruleType != ''">#{ruleType},</if>
+            <if test="ruleCode != null and ruleCode != ''">#{ruleCode},</if>
+            <if test="pointsType != null and pointsType != ''">#{pointsType},</if>
+            <if test="pointsValue != null">#{pointsValue},</if>
+            <if test="ruleCondition != null">#{ruleCondition},</if>
+            <if test="maxPointsPerDay != null">#{maxPointsPerDay},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updatePointsRule" parameterType="ShopPointsRule">
+        update shop_points_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleName != null and ruleName != ''">rule_name = #{ruleName},</if>
+            <if test="ruleType != null and ruleType != ''">rule_type = #{ruleType},</if>
+            <if test="ruleCode != null and ruleCode != ''">rule_code = #{ruleCode},</if>
+            <if test="pointsType != null and pointsType != ''">points_type = #{pointsType},</if>
+            <if test="pointsValue != null">points_value = #{pointsValue},</if>
+            <if test="ruleCondition != null">rule_condition = #{ruleCondition},</if>
+            <if test="maxPointsPerDay != null">max_points_per_day = #{maxPointsPerDay},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where rule_id = #{ruleId}
+    </update>
+
+    <delete id="deletePointsRuleById" parameterType="Long">
+        delete from shop_points_rule where rule_id = #{ruleId}
+    </delete>
+
+    <delete id="deletePointsRuleByIds" parameterType="Long">
+        delete from shop_points_rule where rule_id in
+        <foreach item="ruleId" collection="array" open="(" separator="," close=")">
+            #{ruleId}
+        </foreach>
+    </delete>
+
+</mapper>
