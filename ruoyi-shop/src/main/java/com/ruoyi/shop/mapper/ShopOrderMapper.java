@@ -1,6 +1,7 @@
 package com.ruoyi.shop.mapper;
 
 import java.util.List;
+import java.util.Map;
 import com.ruoyi.shop.domain.ShopOrder;
 import com.ruoyi.shop.domain.ShopOrderItem;
 
@@ -106,4 +107,34 @@ public interface ShopOrderMapper
      * @return 结果
      */
     public int batchInsertOrderItems(List<ShopOrderItem> orderItems);
+
+    /**
+     * 查询订单统计概览
+     *
+     * @return 统计数据
+     */
+    public Map<String, Object> selectOrderOverview();
+
+    /**
+     * 查询订单趋势数据
+     *
+     * @param params 查询参数
+     * @return 趋势数据列表
+     */
+    public List<Map<String, Object>> selectOrderTrend(Map<String, Object> params);
+
+    /**
+     * 按状态统计订单数量
+     *
+     * @return 状态统计数据
+     */
+    public List<Map<String, Object>> selectOrderStatusStatistics();
+
+    /**
+     * 查询热销商品TOP N
+     *
+     * @param limit 查询数量
+     * @return 热销商品列表
+     */
+    public List<Map<String, Object>> selectTopSellingProducts(Integer limit);
 }

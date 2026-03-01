@@ -205,4 +205,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </insert>
 
+    <!-- ==================== 统计查询 ==================== -->
+
+    <select id="selectOrderOverview" resultType="java.util.HashMap">
+        SELECT
+            COUNT(*) as total_orders,
+            COALESCE(SUM(pay_amount), 0) as total_amount,
+            SUM(CASE WHEN DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) as today_orders,
+            COALESCE(SUM(CASE WHEN DATE(create_time) = CURDATE() THEN pay_amount ELSE 0 END), 0) as today_amount,
+            SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
+            SUM(CASE WHEN order_status = 'paid' THEN 1 ELSE 0 END) as paid_orders,
+            SUM(CASE WHEN order_status = 'shipped' THEN 1 ELSE 0 END) as shipped_orders,
+            SUM(CASE WHEN order_status = 'completed' THEN 1 ELSE 0 END) as completed_orders,
+            SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders
+        FROM shop_order
+    </select>
+
+    <select id="selectOrderTrend" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(create_time, '#{dateFormat}') as date,
+            COUNT(*) as order_count,
+            COALESCE(SUM(pay_amount), 0) as order_amount
+        FROM shop_order
+        <where>
+            <if test="startTime != null and startTime != ''">
+                AND create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(create_time, '#{dateFormat}')
+        ORDER BY date ASC
+    </select>
+
+    <select id="selectOrderStatusStatistics" resultType="java.util.HashMap">
+        SELECT
+            order_status as status,
+            CASE order_status
+                WHEN 'pending' THEN '待付款'
+                WHEN 'paid' THEN '已付款'
+                WHEN 'shipped' THEN '已发货'
+                WHEN 'completed' THEN '已完成'
+                WHEN 'cancelled' THEN '已取消'
+                ELSE '未知'
+            END as status_name,
+            COUNT(*) as count
+        FROM shop_order
+        GROUP BY order_status
+        ORDER BY count DESC
+    </select>
+
+    <select id="selectTopSellingProducts" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+        SELECT
+            oi.product_id as product_id,
+            oi.product_name as product_name,
+            oi.product_image as product_image,
+            SUM(oi.quantity) as sales_count,
+            COALESCE(SUM(oi.subtotal), 0) as sales_amount
+        FROM shop_order_item oi
+        INNER JOIN shop_order o ON oi.order_id = o.order_id
+        WHERE o.order_status IN ('paid', 'shipped', 'completed')
+        GROUP BY oi.product_id, oi.product_name, oi.product_image
+        ORDER BY sales_count DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
 </mapper>

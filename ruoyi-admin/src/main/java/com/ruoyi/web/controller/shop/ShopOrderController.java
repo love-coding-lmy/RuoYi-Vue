@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.shop;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -132,5 +135,51 @@ public class ShopOrderController extends BaseController
     public AjaxResult complete(@PathVariable Long orderId)
     {
         return toAjax(orderService.updateOrderComplete(orderId));
+    }
+
+    /**
+     * 获取订单统计概览
+     */
+    @PreAuthorize("@ss.hasPermi('shop:order:query')")
+    @GetMapping("/statistics/overview")
+    public AjaxResult getOverview()
+    {
+        return success(orderService.getOrderOverview());
+    }
+
+    /**
+     * 获取订单趋势数据
+     */
+    @PreAuthorize("@ss.hasPermi('shop:order:query')")
+    @GetMapping("/statistics/trend")
+    public AjaxResult getTrend(@RequestParam(required = false) String startTime,
+                               @RequestParam(required = false) String endTime,
+                               @RequestParam(required = false, defaultValue = "day") String type)
+    {
+        Map<String, Object> params = new HashMap<>();
+        params.put("startTime", startTime);
+        params.put("endTime", endTime);
+        params.put("type", type);
+        return success(orderService.getOrderTrend(params));
+    }
+
+    /**
+     * 获取订单状态统计
+     */
+    @PreAuthorize("@ss.hasPermi('shop:order:query')")
+    @GetMapping("/statistics/status")
+    public AjaxResult getStatusStatistics()
+    {
+        return success(orderService.getOrderStatusStatistics());
+    }
+
+    /**
+     * 获取热销商品排行
+     */
+    @PreAuthorize("@ss.hasPermi('shop:order:query')")
+    @GetMapping("/statistics/topProducts")
+    public AjaxResult getTopSellingProducts(@RequestParam(required = false, defaultValue = "10") Integer limit)
+    {
+        return success(orderService.getTopSellingProducts(limit));
     }
 }

@@ -1,6 +1,7 @@
 package com.ruoyi.shop.service;
 
 import java.util.List;
+import java.util.Map;
 import com.ruoyi.shop.domain.ShopOrder;
 import com.ruoyi.shop.domain.ShopOrderItem;
 
@@ -91,4 +92,34 @@ public interface IShopOrderService
      * @return 订单明细集合
      */
     public List<ShopOrderItem> selectOrderItemsByOrderId(Long orderId);
+
+    /**
+     * 获取订单统计概览
+     *
+     * @return 统计概览数据
+     */
+    public Map<String, Object> getOrderOverview();
+
+    /**
+     * 获取订单趋势数据
+     *
+     * @param params 查询参数（包含startTime、endTime、type）
+     * @return 趋势数据列表
+     */
+    public List<Map<String, Object>> getOrderTrend(Map<String, Object> params);
+
+    /**
+     * 获取订单状态统计
+     *
+     * @return 状态统计数据列表
+     */
+    public List<Map<String, Object>> getOrderStatusStatistics();
+
+    /**
+     * 获取热销商品排行
+     *
+     * @param limit 查询数量
+     * @return 热销商品列表
+     */
+    public List<Map<String, Object>> getTopSellingProducts(Integer limit);
 }

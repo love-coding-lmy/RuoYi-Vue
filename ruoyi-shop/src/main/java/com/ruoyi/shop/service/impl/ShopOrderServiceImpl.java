@@ -1,6 +1,10 @@
 package com.ruoyi.shop.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,5 +212,96 @@ public class ShopOrderServiceImpl implements IShopOrderService
             default:
                 return "未知";
         }
+    }
+
+    /**
+     * 获取订单统计概览
+     *
+     * @return 统计概览数据
+     */
+    @Override
+    public Map<String, Object> getOrderOverview()
+    {
+        return orderMapper.selectOrderOverview();
+    }
+
+    /**
+     * 获取订单趋势数据
+     *
+     * @param params 查询参数（包含startTime、endTime、type）
+     * @return 趋势数据列表
+     */
+    @Override
+    public List<Map<String, Object>> getOrderTrend(Map<String, Object> params)
+    {
+        // 根据类型设置日期格式
+        String type = (String) params.get("type");
+        String dateFormat;
+        if ("week".equals(type))
+        {
+            dateFormat = "%Y-%u";
+        }
+        else if ("month".equals(type))
+        {
+            dateFormat = "%Y-%m";
+        }
+        else
+        {
+            dateFormat = "%Y-%m-%d";
+        }
+        params.put("dateFormat", dateFormat);
+
+        return orderMapper.selectOrderTrend(params);
+    }
+
+    /**
+     * 获取订单状态统计
+     *
+     * @return 状态统计数据列表
+     */
+    @Override
+    public List<Map<String, Object>> getOrderStatusStatistics()
+    {
+        List<Map<String, Object>> statusList = orderMapper.selectOrderStatusStatistics();
+
+        // 计算总数
+        int totalCount = 0;
+        for (Map<String, Object> status : statusList)
+        {
+            totalCount += ((Number) status.get("count")).intValue();
+        }
+
+        // 计算百分比
+        if (totalCount > 0)
+        {
+            for (Map<String, Object> status : statusList)
+            {
+                int count = ((Number) status.get("count")).intValue();
+                double percentage = (count * 100.0) / totalCount;
+                status.put("percentage", Math.round(percentage * 100.0) / 100.0);
+            }
+        }
+
+        return statusList;
+    }
+
+    /**
+     * 获取热销商品排行
+     *
+     * @param limit 查询数量
+     * @return 热销商品列表
+     */
+    @Override
+    public List<Map<String, Object>> getTopSellingProducts(Integer limit)
+    {
+        List<Map<String, Object>> products = orderMapper.selectTopSellingProducts(limit);
+
+        // 设置排名
+        for (int i = 0; i < products.size(); i++)
+        {
+            products.get(i).put("rank", i + 1);
+        }
+
+        return products;
     }
 }
