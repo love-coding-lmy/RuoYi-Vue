@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shop.mapper.ShopCouponMapper">
+
+    <resultMap type="ShopCoupon" id="ShopCouponResult">
+        <id     property="couponId"           column="coupon_id"          />
+        <result property="couponName"         column="coupon_name"        />
+        <result property="couponType"         column="coupon_type"        />
+        <result property="couponCondition"    column="coupon_condition"   />
+        <result property="minAmount"          column="min_amount"         />
+        <result property="reduceAmount"       column="reduce_amount"      />
+        <result property="discount"           column="discount"           />
+        <result property="giftProductId"      column="gift_product_id"    />
+        <result property="freeShipping"       column="free_shipping"      />
+        <result property="totalCount"         column="total_count"        />
+        <result property="receiveCount"       column="receive_count"      />
+        <result property="useCount"           column="use_count"          />
+        <result property="perUserLimit"       column="per_user_limit"     />
+        <result property="validType"          column="valid_type"         />
+        <result property="validDays"          column="valid_days"         />
+        <result property="startTime"          column="start_time"         />
+        <result property="endTime"            column="end_time"           />
+        <result property="status"             column="status"             />
+        <result property="remark"             column="remark"             />
+        <result property="createBy"           column="create_by"          />
+        <result property="createTime"         column="create_time"        />
+        <result property="updateBy"           column="update_by"          />
+        <result property="updateTime"         column="update_time"        />
+    </resultMap>
+
+    <sql id="selectCouponVo">
+        select coupon_id, coupon_name, coupon_type, coupon_condition, min_amount,
+               reduce_amount, discount, gift_product_id, free_shipping,
+               total_count, receive_count, use_count, per_user_limit,
+               valid_type, valid_days, start_time, end_time, status,
+               remark, create_by, create_time, update_by, update_time
+        from shop_coupon
+    </sql>
+
+    <select id="selectCouponById" parameterType="Long" resultMap="ShopCouponResult">
+        <include refid="selectCouponVo"/>
+        where coupon_id = #{couponId}
+    </select>
+
+    <select id="selectCouponList" parameterType="ShopCoupon" resultMap="ShopCouponResult">
+        <include refid="selectCouponVo"/>
+        <where>
+            <if test="couponName != null and couponName != ''">
+                AND coupon_name like concat('%', #{couponName}, '%')
+            </if>
+            <if test="couponType != null and couponType != ''">
+                AND coupon_type = #{couponType}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="validType != null and validType != ''">
+                AND valid_type = #{validType}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND start_time &gt;= #{params.beginTime}
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                AND end_time &lt;= #{params.endTime}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertCoupon" parameterType="ShopCoupon" useGeneratedKeys="true" keyProperty="couponId">
+        insert into shop_coupon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="couponName != null and couponName != ''">coupon_name,</if>
+            <if test="couponType != null and couponType != ''">coupon_type,</if>
+            <if test="couponCondition != null">coupon_condition,</if>
+            <if test="minAmount != null">min_amount,</if>
+            <if test="reduceAmount != null">reduce_amount,</if>
+            <if test="discount != null">discount,</if>
+            <if test="giftProductId != null">gift_product_id,</if>
+            <if test="freeShipping != null">free_shipping,</if>
+            <if test="totalCount != null">total_count,</if>
+            <if test="perUserLimit != null">per_user_limit,</if>
+            <if test="validType != null">valid_type,</if>
+            <if test="validDays != null">valid_days,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="couponName != null and couponName != ''">#{couponName},</if>
+            <if test="couponType != null and couponType != ''">#{couponType},</if>
+            <if test="couponCondition != null">#{couponCondition},</if>
+            <if test="minAmount != null">#{minAmount},</if>
+            <if test="reduceAmount != null">#{reduceAmount},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="giftProductId != null">#{giftProductId},</if>
+            <if test="freeShipping != null">#{freeShipping},</if>
+            <if test="totalCount != null">#{totalCount},</if>
+            <if test="perUserLimit != null">#{perUserLimit},</if>
+            <if test="validType != null">#{validType},</if>
+            <if test="validDays != null">#{validDays},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateCoupon" parameterType="ShopCoupon">
+        update shop_coupon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="couponName != null and couponName != ''">coupon_name = #{couponName},</if>
+            <if test="couponType != null and couponType != ''">coupon_type = #{couponType},</if>
+            <if test="couponCondition != null">coupon_condition = #{couponCondition},</if>
+            <if test="minAmount != null">min_amount = #{minAmount},</if>
+            <if test="reduceAmount != null">reduce_amount = #{reduceAmount},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="giftProductId != null">gift_product_id = #{giftProductId},</if>
+            <if test="freeShipping != null">free_shipping = #{freeShipping},</if>
+            <if test="totalCount != null">total_count = #{totalCount},</if>
+            <if test="perUserLimit != null">per_user_limit = #{perUserLimit},</if>
+            <if test="validType != null">valid_type = #{validType},</if>
+            <if test="validDays != null">valid_days = #{validDays},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </trim>
+        where coupon_id = #{couponId}
+    </update>
+
+    <delete id="deleteCouponById" parameterType="Long">
+        delete from shop_coupon where coupon_id = #{couponId}
+    </delete>
+
+    <delete id="deleteCouponByIds" parameterType="Long">
+        delete from shop_coupon where coupon_id in
+        <foreach item="couponId" collection="array" open="(" separator="," close=")">
+            #{couponId}
+        </foreach>
+    </delete>
+
+</mapper>
