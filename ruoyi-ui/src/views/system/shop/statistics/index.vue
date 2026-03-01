@@ -36,7 +36,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-label">订单总数</div>
-            <div class="stat-value">{{ overview.totalOrders || 0 }}</div>
+            <div class="stat-value">{{ overview.total_orders || 0 }}</div>
           </div>
         </div>
       </el-col>
@@ -47,7 +47,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-label">销售总额</div>
-            <div class="stat-value">¥{{ (overview.totalAmount || 0).toFixed(2) }}</div>
+            <div class="stat-value">¥{{ (overview.total_amount || 0).toFixed(2) }}</div>
           </div>
         </div>
       </el-col>
@@ -58,7 +58,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-label">今日订单</div>
-            <div class="stat-value">{{ overview.todayOrders || 0 }}</div>
+            <div class="stat-value">{{ overview.today_orders || 0 }}</div>
           </div>
         </div>
       </el-col>
@@ -69,7 +69,7 @@
           </div>
           <div class="stat-content">
             <div class="stat-label">待发货</div>
-            <div class="stat-value">{{ overview.paidOrders || 0 }}</div>
+            <div class="stat-value">{{ overview.paid_orders || 0 }}</div>
           </div>
         </div>
       </el-col>
@@ -120,33 +120,33 @@
           <div class="today-stats">
             <div class="today-stat-item">
               <span class="label">今日订单数：</span>
-              <span class="value">{{ overview.todayOrders || 0 }}</span>
+              <span class="value">{{ overview.today_orders || 0 }}</span>
             </div>
             <div class="today-stat-item">
               <span class="label">今日销售额：</span>
-              <span class="value">¥{{ (overview.todayAmount || 0).toFixed(2) }}</span>
+              <span class="value">¥{{ (overview.today_amount || 0).toFixed(2) }}</span>
             </div>
             <el-divider />
             <div class="status-grid">
               <div class="status-item pending">
                 <div class="status-label">待付款</div>
-                <div class="status-count">{{ overview.pendingOrders || 0 }}</div>
+                <div class="status-count">{{ overview.pending_orders || 0 }}</div>
               </div>
               <div class="status-item paid">
                 <div class="status-label">已付款</div>
-                <div class="status-count">{{ overview.paidOrders || 0 }}</div>
+                <div class="status-count">{{ overview.paid_orders || 0 }}</div>
               </div>
               <div class="status-item shipped">
                 <div class="status-label">已发货</div>
-                <div class="status-count">{{ overview.shippedOrders || 0 }}</div>
+                <div class="status-count">{{ overview.shipped_orders || 0 }}</div>
               </div>
               <div class="status-item completed">
                 <div class="status-label">已完成</div>
-                <div class="status-count">{{ overview.completedOrders || 0 }}</div>
+                <div class="status-count">{{ overview.completed_orders || 0 }}</div>
               </div>
               <div class="status-item cancelled">
                 <div class="status-label">已取消</div>
-                <div class="status-count">{{ overview.cancelledOrders || 0 }}</div>
+                <div class="status-count">{{ overview.cancelled_orders || 0 }}</div>
               </div>
             </div>
           </div>
@@ -182,12 +182,16 @@ const TrendChart = {
     chartData: {
       deep: true,
       handler() {
-        this.initChart()
+        this.$nextTick(() => {
+          this.initChart()
+        })
       }
     }
   },
   mounted() {
-    this.initChart()
+    this.$nextTick(() => {
+      this.initChart()
+    })
     window.addEventListener('resize', this.handleResize)
   },
   beforeDestroy() {
@@ -332,7 +336,7 @@ const StatusPieChart = {
       this.chart = echarts.init(this.$el, 'macarons')
 
       const data = this.chartData.map(item => ({
-        name: item.statusName,
+        name: item.status_name,
         value: item.count
       }))
 
@@ -434,8 +438,8 @@ const TopProductsChart = {
       }
       this.chart = echarts.init(this.$el, 'macarons')
 
-      const names = this.chartData.map(item => item.productName)
-      const counts = this.chartData.map(item => item.salesCount)
+      const names = this.chartData.map(item => item.product_name)
+      const counts = this.chartData.map(item => item.sales_count)
 
       const option = {
         tooltip: {
@@ -589,6 +593,7 @@ export default {
       const params = {
         type: this.trendType
       }
+      // 只有设置了日期范围才传递参数
       if (this.dateRange && this.dateRange.length === 2) {
         params.startTime = this.dateRange[0]
         params.endTime = this.dateRange[1]
@@ -597,8 +602,8 @@ export default {
         const data = response.data || []
         this.trendData = {
           dates: data.map(item => item.date),
-          counts: data.map(item => item.orderCount),
-          amounts: data.map(item => parseFloat(item.orderAmount || 0))
+          counts: data.map(item => item.order_count),
+          amounts: data.map(item => parseFloat(item.order_amount || 0))
         }
       })
     },

@@ -207,7 +207,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- ==================== 统计查询 ==================== -->
 
-    <select id="selectOrderOverview" resultType="java.util.HashMap">
+    <select id="selectOrderOverview" resultType="java.util.Map">
         SELECT
             COUNT(*) as total_orders,
             COALESCE(SUM(pay_amount), 0) as total_amount,
@@ -223,19 +223,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderTrend" parameterType="java.util.Map" resultType="java.util.HashMap">
         SELECT
-            DATE_FORMAT(create_time, '#{dateFormat}') as date,
+            DATE_FORMAT(create_time, '${dateFormat}') as date,
             COUNT(*) as order_count,
             COALESCE(SUM(pay_amount), 0) as order_amount
         FROM shop_order
         <where>
             <if test="startTime != null and startTime != ''">
-                AND create_time &gt;= #{startTime}
+                AND DATE(create_time) &gt;= #{startTime}
             </if>
             <if test="endTime != null and endTime != ''">
-                AND create_time &lt;= #{endTime}
+                AND DATE(create_time) &lt;= #{endTime}
             </if>
         </where>
-        GROUP BY DATE_FORMAT(create_time, '#{dateFormat}')
+        GROUP BY DATE_FORMAT(create_time, '${dateFormat}')
         ORDER BY date ASC
     </select>
 
