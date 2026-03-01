@@ -203,6 +203,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach collection="list" item="item" separator=",">
             (#{item.orderId}, #{item.productId}, #{item.productName}, #{item.productImage}, #{item.productPrice}, #{item.quantity}, #{item.subtotal})
         </foreach>
-    </delete>
+    </insert>
 
 </mapper>

@@ -8,6 +8,8 @@ import com.ruoyi.shop.domain.ShopOrder;
 import com.ruoyi.shop.domain.ShopOrderItem;
 import com.ruoyi.shop.mapper.ShopOrderMapper;
 import com.ruoyi.shop.service.IShopOrderService;
+import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.domain.SysUser;
 
 /**
  * 订单Service业务层处理
@@ -19,6 +21,9 @@ public class ShopOrderServiceImpl implements IShopOrderService
 {
     @Autowired
     private ShopOrderMapper orderMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询订单
@@ -84,6 +89,16 @@ public class ShopOrderServiceImpl implements IShopOrderService
     @Override
     public int insertOrder(ShopOrder order)
     {
+        // 根据用户ID获取用户名
+        if (order.getUserId() != null && order.getUsername() == null)
+        {
+            SysUser user = userMapper.selectUserById(order.getUserId());
+            if (user != null)
+            {
+                order.setUsername(user.getUserName());
+            }
+        }
+
         int rows = orderMapper.insertOrder(order);
         // 插入订单明细
         if (order.getOrderItems() != null && !order.getOrderItems().isEmpty())

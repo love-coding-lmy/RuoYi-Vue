@@ -2,7 +2,9 @@ package com.ruoyi.shop.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.ruoyi.common.annotation.Excel;
 
 /**
@@ -13,6 +15,9 @@ import com.ruoyi.common.annotation.Excel;
 public class ShopOrder
 {
     private static final long serialVersionUID = 1L;
+
+    /** 请求参数 */
+    private Map<String, Object> params;
 
     /** 订单ID */
     private Long orderId;
@@ -451,5 +456,19 @@ public class ShopOrder
     public void setOrderStatusText(String orderStatusText)
     {
         this.orderStatusText = orderStatusText;
+    }
+
+    public Map<String, Object> getParams()
+    {
+        if (params == null)
+        {
+            params = new HashMap<>();
+        }
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params)
+    {
+        this.params = params;
     }
 }
